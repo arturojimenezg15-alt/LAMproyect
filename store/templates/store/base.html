@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L/A.Management</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="{% url 'product_list' %}" class="logo">L/A.Management</a>
+            <div class="nav-links">
+                {% if user.is_authenticated %}
+                <span class="user-welcome">Hello, {{ user.username }}</span>
+                {% if user.is_superuser %}
+                <a href="{% url 'product_create' %}" class="btn btn-secondary">Add Product</a>
+                {% endif %}
+                <a href="{% url 'logout' %}" class="btn btn-outline">Logout</a>
+                {% else %}
+                <a href="{% url 'login' %}" class="btn btn-outline">Login</a>
+                <a href="{% url 'signup' %}" class="btn btn-primary">Sign Up</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="container content">
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 L/A.Management. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+
+</html>

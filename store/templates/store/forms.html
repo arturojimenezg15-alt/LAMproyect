@@ -1,0 +1,14 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+<div class="form-wrapper">
+    <div class="form-card">
+        <h2>{{ title }}</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary btn-block">{{ action|default:"Submit" }}</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
