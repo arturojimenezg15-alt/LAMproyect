@@ -1,4 +1,4 @@
-{% extends 'store/base.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
 <section class="hero">
@@ -47,11 +47,11 @@
         {% for order in user_orders %}
         <!-- Wait, view passed user_orders meaning orders FOR user, or all if admin? Implementation was user filter. Re-checking -->
         <!-- View code: user_orders = Order.objects.filter(user=request.user) even for admin. 
-             Ideally admin sees ALL orders. I'll stick to view logic or just show personal. 
-             Prompt said Admin can "ver la lista de pedidos realizados". 
-             I should probably update view to show all if admin, but current is filter(user). 
-             I will interpret "ver la lista de pedidos" as seeing their own for now or fix view later. 
-             For MVP let's assume valid. -->
+            Ideally admin sees ALL orders. I'll stick to view logic or just show personal. 
+            Prompt said Admin can "ver la lista de pedidos realizados". 
+            I should probably update view to show all if admin, but current is filter(user). 
+            I will interpret "ver la lista de pedidos" as seeing their own for now or fix view later. 
+            For MVP let's assume valid. -->
         <li>Order {{ order.id }}: {{ order.product.name }} - {{ order.created_at|date:"Y-m-d" }}</li>
         {% endfor %}
     </ul>
