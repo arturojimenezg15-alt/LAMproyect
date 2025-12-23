@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<article>
+    <header class="post-detail-header">
+        <h1>{{ object.title }}</h1>
+        <div class="post-meta">{{ object.created_at|date:"F d, Y" }} — {{ object.author }}</div>
+    </header>
+
+    <div class="post-content">
+        {{ object.content|linebreaks }}
+    </div>
+
+    {% if user == object.author %}
+    <div style="margin-top: 3rem;">
+        <a href="{% url 'post_edit' object.pk %}" class="btn">Edit</a>
+        <a href="{% url 'post_delete' object.pk %}" class="btn"
+            style="background-color: transparent; color: var(--accent-color); border: 2px solid var(--accent-color);">Delete</a>
+    </div>
+    {% endif %}
+</article>
+{% endblock %}

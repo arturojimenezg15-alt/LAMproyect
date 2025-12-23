@@ -13,11 +13,12 @@
 <body>
     <nav class="navbar">
         <div class="container nav-container">
-            <a href="{% url 'product_list' %}" class="logo">L/A.Management</a>
+            <a href="{% url 'product_list' %}" class="logo">L.A.Management</a>
             <div class="nav-links">
                 {% if user.is_authenticated %}
-                <span class="user-welcome">Hello, {{ user.username }}</span>
+                <span class="user-welcome"> Hello, {{ user.username }}</span>
                 {% if user.is_superuser %}
+                <a href="{% url 'dashboard_home' %}" class="btn btn-secondary">Dashboard</a>
                 <a href="{% url 'product_create' %}" class="btn btn-secondary">Add Product</a>
                 {% endif %}
                 <a href="{% url 'logout' %}" class="btn btn-outline">Logout</a>

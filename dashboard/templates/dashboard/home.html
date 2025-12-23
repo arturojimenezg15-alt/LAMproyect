@@ -1,0 +1,200 @@
+{% extends 'base.html' %} {% block content %}
+<div class="dashboard-container">
+  <h1 class="page-title">Admin Dashboard</h1>
+
+  <!-- Key Metrics Cards -->
+  <div class="dashboard-cards">
+    <div class="card">
+      <div class="card-icon">📦</div>
+      <div class="card-info">
+        <h3>Total Products</h3>
+        <p class="card-value">{{ total_products }}</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🛒</div>
+      <div class="card-info">
+        <h3>Total Orders</h3>
+        <p class="card-value">{{ total_orders }}</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-icon">👥</div>
+      <div class="card-info">
+        <h3>Unique Customers</h3>
+        <p class="card-value">{{ unique_customers }}</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-icon">💰</div>
+      <div class="card-info">
+        <h3>Total Revenue</h3>
+        <p class="card-value">${{ total_revenue }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-grid">
+    <!-- Sales Chart -->
+    <div class="chart-container section-container">
+      <h2>Monthly Revenue</h2>
+      <canvas id="salesChart"></canvas>
+    </div>
+
+    <!-- Recent Orders -->
+    <div class="recent-orders section-container">
+      <h2>Recent Orders</h2>
+      {% if recent_orders %}
+      <table class="dashboard-table">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Product</th>
+            <th>Date</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in recent_orders %}
+          <tr>
+            <td>#{{ order.id }}</td>
+            <td>{{ order.user.username }}</td>
+            <td>{{ order.product.name }}</td>
+            <td>{{ order.created_at|date:"M d, Y" }}</td>
+            <td>${{ order.product.price }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p>No orders found.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- Styles just for dashboard (should ideally be in style.css but placed here for self-containment) -->
+<style>
+  .dashboard-container {
+    padding: 2rem 0;
+  }
+  .page-title {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: #333;
+  }
+  .dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+  .card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: transform 0.2s;
+  }
+  .card:hover {
+    transform: translateY(-5px);
+  }
+  .card-icon {
+    font-size: 2.5rem;
+  }
+  .card-info h3 {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 0.25rem;
+  }
+  .card-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+  }
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+  }
+  @media (max-width: 900px) {
+    .dashboard-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .section-container {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  .section-container h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.25rem;
+    color: #444;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.5rem;
+  }
+  .dashboard-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .dashboard-table th,
+  .dashboard-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+  .dashboard-table th {
+    font-weight: 600;
+    color: #555;
+  }
+</style>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx = document.getElementById("salesChart").getContext("2d");
+  const chartData = JSON.parse("{{ chart_data|escapejs }}");
+  const chartLabels = JSON.parse("{{ chart_labels|escapejs }}");
+
+  new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: chartLabels,
+      datasets: [
+        {
+          label: "Revenue ($)",
+          data: chartData,
+          borderColor: "#3498db",
+          backgroundColor: "rgba(52, 152, 219, 0.1)",
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: "top",
+        },
+        title: {
+          display: false,
+          text: "Monthly Revenue",
+        },
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+        },
+      },
+    },
+  });
+</script>
+{% endblock %}
