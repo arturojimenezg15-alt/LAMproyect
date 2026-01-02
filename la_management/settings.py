@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'store',
     'accounts',
     'dashboard',
+    'inventory',
 ]
 
 MIDDLEWARE = [

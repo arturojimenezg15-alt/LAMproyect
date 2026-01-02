@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="hero" style="text-align: left; margin-bottom: 0;">
+            <h1>Inventory Management</h1>
+            <p class="text-muted">Track stock movements and supplier transactions.</p>
+        </div>
+        <div>
+            <a href="/admin/inventory/" class="btn btn-primary" target="_blank">Manage/Add New</a>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Product</th>
+                    <th>Type</th>
+                    <th>Qty</th>
+                    <th>Supplier</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                <tr>
+                    <td>{{ transaction.date|date:"M d, Y H:i" }}</td>
+                    <td>
+                        <div style="font-weight: 500;">{{ transaction.product.name }}</div>
+                        <div style="font-size: 0.8rem; color: #777;">Stock: {{ transaction.product.stock }}</div>
+                    </td>
+                    <td>
+                        {% if transaction.transaction_type == 'purchase' or transaction.transaction_type == 'return' %}
+                            <span class="badge badge-success">{{ transaction.get_transaction_type_display }}</span>
+                        {% elif transaction.transaction_type == 'sale' %}
+                            <span class="badge badge-danger">{{ transaction.get_transaction_type_display }}</span>
+                        {% else %}
+                            <span class="badge badge-info">{{ transaction.get_transaction_type_display }}</span>
+                        {% endif %}
+                    </td>
+                    <td style="font-weight: bold; {% if transaction.quantity > 0 %}color: #2ecc71;{% else %}color: #e74c3c;{% endif %}">
+                        {% if transaction.quantity > 0 %}+{% endif %}{{ transaction.quantity }}
+                    </td>
+                    <td>{{ transaction.supplier.name|default:"-" }}</td>
+                    <td>
+                        {% if transaction.notes %}
+                            {{ transaction.notes }}
+                        {% else %}
+                            <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center p-4">
+                        <p>No transactions found.</p>
+                        <a href="/admin/inventory/inventorytransaction/add/" class="btn btn-sm btn-primary">Add Transaction</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

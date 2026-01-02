@@ -21,6 +21,7 @@
                 <a href="{% url 'dashboard_home' %}" class="btn btn-secondary">Dashboard</a>
                 <a href="{% url 'product_create' %}" class="btn btn-secondary">Add Product</a>
                 {% endif %}
+                <a href="{% url 'inventory_index' %}" class="btn btn-secondary">Inventory</a>
                 <a href="{% url 'logout' %}" class="btn btn-outline">Logout</a>
                 {% else %}
                 <a href="{% url 'login' %}" class="btn btn-outline">Login</a>
