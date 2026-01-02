@@ -3,66 +3,114 @@
 {% block content %}
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="hero" style="text-align: left; margin-bottom: 0;">
-            <h1>Inventory Management</h1>
-            <p class="text-muted">Track stock movements and supplier transactions.</p>
-        </div>
         <div>
-            <a href="/admin/inventory/" class="btn btn-primary" target="_blank">Manage/Add New</a>
+            <h2>Inventory Dashboard</h2>
+            <p class="text-muted">Manage your stock and products efficiently.</p>
         </div>
     </div>
 
+    <!-- Metrics Cards -->
+    <div class="dashboard-metrics">
+        <div class="metric-card">
+            <span class="metric-title">Total Products</span>
+            <span class="metric-value">{{ total_products }}</span>
+        </div>
+        <div class="metric-card">
+            <span class="metric-title">Low Stock Alerts</span>
+            <span class="metric-value {% if low_stock > 0 %}text-danger{% endif %}">{{ low_stock }}</span>
+        </div>
+        <div class="metric-card">
+            <span class="metric-title">Total Value</span>
+            <span class="metric-value">${{ total_value|floatformat:2 }}</span>
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <form method="GET" action="{% url 'inventory_index' %}" class="d-flex">
+            <input type="text" name="q" class="search-bar" placeholder="Search products..." value="{{ search_query }}">
+        </form>
+        <button id="addProductBtn" class="btn btn-primary">+ Add Product</button>
+    </div>
+
+    <!-- Product Table -->
     <div class="table-responsive">
         <table class="table">
             <thead>
                 <tr>
-                    <th>Date</th>
-                    <th>Product</th>
-                    <th>Type</th>
-                    <th>Qty</th>
-                    <th>Supplier</th>
-                    <th>Notes</th>
+                    <th>Product Name</th>
+                    <th>Price</th>
+                    <th>Stock Level</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
-                {% for transaction in transactions %}
+                {% for product in products %}
                 <tr>
-                    <td>{{ transaction.date|date:"M d, Y H:i" }}</td>
                     <td>
-                        <div style="font-weight: 500;">{{ transaction.product.name }}</div>
-                        <div style="font-size: 0.8rem; color: #777;">Stock: {{ transaction.product.stock }}</div>
+                        <div style="font-weight: 500;">{{ product.name }}</div>
+                        <div style="font-size: 0.8rem; color: #7f8c8d;">Added: {{ product.created_at|date:"M d, Y" }}</div>
+                    </td>
+                    <td>${{ product.price|floatformat:2 }}</td>
+                    <td style="font-weight: 500;" class="{% if product.stock < 10 %}text-danger{% else %}text-success{% endif %}">
+                        {{ product.stock }} Units
                     </td>
                     <td>
-                        {% if transaction.transaction_type == 'purchase' or transaction.transaction_type == 'return' %}
-                            <span class="badge badge-success">{{ transaction.get_transaction_type_display }}</span>
-                        {% elif transaction.transaction_type == 'sale' %}
-                            <span class="badge badge-danger">{{ transaction.get_transaction_type_display }}</span>
+                        {% if product.stock == 0 %}
+                            <span class="badge badge-danger">Out of Stock</span>
+                        {% elif product.stock < 10 %}
+                            <span class="badge badge-warning">Low Stock</span>
                         {% else %}
-                            <span class="badge badge-info">{{ transaction.get_transaction_type_display }}</span>
-                        {% endif %}
-                    </td>
-                    <td style="font-weight: bold; {% if transaction.quantity > 0 %}color: #2ecc71;{% else %}color: #e74c3c;{% endif %}">
-                        {% if transaction.quantity > 0 %}+{% endif %}{{ transaction.quantity }}
-                    </td>
-                    <td>{{ transaction.supplier.name|default:"-" }}</td>
-                    <td>
-                        {% if transaction.notes %}
-                            {{ transaction.notes }}
-                        {% else %}
-                            <span class="text-muted">-</span>
+                            <span class="badge badge-success">In Stock</span>
                         {% endif %}
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="6" class="text-center p-4">
-                        <p>No transactions found.</p>
-                        <a href="/admin/inventory/inventorytransaction/add/" class="btn btn-sm btn-primary">Add Transaction</a>
+                    <td colspan="4" class="text-center p-4">
+                        <p>No products found matching your criteria.</p>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+
+    <!-- Add Product Modal -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Add New Product</h2>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-wrapper" style="padding-top: 10px; display: block;">
+                    {{ form.as_p }}
+                </div>
+                <button type="submit" class="btn btn-primary btn-block mt-4">Save Product</button>
+            </form>
+        </div>
+    </div>
+
 </div>
+
+<script>
+    // Modal Logic
+    const modal = document.getElementById("productModal");
+    const btn = document.getElementById("addProductBtn");
+    const span = document.getElementsByClassName("close-btn")[0];
+
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
 {% endblock %}
