@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-s8=y7@uejg=pz&q7j&gpu!0^_v0a7gvsi)0%os3rsktksmr(_7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver']
 
 
 # Application definition
@@ -51,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'la_management.middleware.LoginRequiredMiddleware',
 ]
 
 ROOT_URLCONF = 'la_management.urls'
@@ -125,5 +126,6 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # Redirects
+LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'product_list'
 LOGOUT_REDIRECT_URL = 'product_list'
