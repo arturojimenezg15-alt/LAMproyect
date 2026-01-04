@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>L/A.Management</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -23,6 +23,7 @@
                 <a href="{% url 'dashboard_home' %}" class="btn btn-secondary">Dashboard</a>
                 <a href="{% url 'product_create' %}" class="btn btn-secondary">Add Product</a>
                 {% endif %}
+                <a href="{% url 'user_panel' %}" class="btn btn-secondary">User Panel</a>
                 <a href="{% url 'inventory_index' %}" class="btn btn-secondary">Inventory</a>
                 <a href="{% url 'logout' %}" class="btn btn-outline">Logout</a>
                 {% else %}
@@ -50,7 +51,7 @@
         </div>
     </footer>
 
-    <script src="{% static 'script.js' %}"></script>   
+    <script src="{% static 'script.js' %}"></script>
 </body>
 
 </html>
