@@ -1,22 +1,69 @@
 {% extends "base.html" %}
 
 {% block content %}
-<article>
-    <header class="post-detail-header">
-        <h1>{{ object.title }}</h1>
-        <div class="post-meta">{{ object.created_at|date:"F d, Y" }} — {{ object.author }}</div>
-    </header>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'product_list' %}">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+                </ol>
+            </nav>
 
-    <div class="post-content">
-        {{ object.content|linebreaks }}
-    </div>
+            <div class="card shadow-sm border-0 overflow-hidden">
+                <div class="row g-0">
+                    <div class="col-md-6 bg-light d-flex align-items-center justify-content-center" style="min-height: 400px;">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" class="img-fluid" alt="{{ product.name }}" style="max-height: 400px; object-fit: contain;">
+                        {% else %}
+                        <div class="text-muted">No Image Available</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card-body p-4 d-flex flex-column h-100">
+                            <h1 class="card-title fw-bold mb-2">{{ product.name }}</h1>
+                            <p class="card-text text-muted mb-4 small">Added on {{ product.created_at|date:"F d, Y" }}</p>
+                            
+                            <h3 class="text-primary fw-bold mb-4">${{ product.price }}</h3>
+                            
+                            <div class="mb-4">
+                                <h5 class="fw-bold fs-6">Description</h5>
+                                <p class="card-text">{{ product.description|linebreaks }}</p>
+                            </div>
 
-    {% if user == object.author %}
-    <div style="margin-top: 3rem;">
-        <a href="{% url 'post_edit' object.pk %}" class="btn">Edit</a>
-        <a href="{% url 'post_delete' object.pk %}" class="btn"
-            style="background-color: transparent; color: var(--accent-color); border: 2px solid var(--accent-color);">Delete</a>
+                            <div class="mt-auto">
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <span class="fw-bold">Availability:</span>
+                                    {% if product.stock > 0 %}
+                                    <span class="badge bg-success">In Stock ({{ product.stock }})</span>
+                                    {% else %}
+                                    <span class="badge bg-danger">Out of Stock</span>
+                                    {% endif %}
+                                </div>
+
+                                {% if user.is_authenticated %}
+                                <div class="d-grid">
+                                    <a href="{% url 'place_order' product.id %}" class="btn btn-primary btn-lg">Buy Now</a>
+                                </div>
+                                {% else %}
+                                <div class="d-grid">
+                                    <a href="{% url 'login' %}" class="btn btn-outline-primary">Login to Buy</a>
+                                </div>
+                                {% endif %}
+
+                                {% if user.is_superuser %}
+                                <div class="d-grid gap-2 d-md-flex mt-3 pt-3 border-top justify-content-md-end">
+                                    <a href="{% url 'product_update' product.pk %}" class="btn btn-sm btn-outline-secondary">Edit Product</a>
+                                    <a href="{% url 'product_delete' product.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    {% endif %}
-</article>
+</div>
 {% endblock %}
