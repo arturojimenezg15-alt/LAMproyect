@@ -10,9 +10,9 @@ def dashboard(request):
         u_form = UserUpdateForm(request.POST, instance=request.user)
         # Ensure profile exists before updating (though signal handles creation, migration might miss existing users)
         if not hasattr(request.user, 'profile'):
-             from .models import Profile
-             Profile.objects.create(user=request.user)
-             
+            from .models import Profile
+            Profile.objects.create(user=request.user)
+            
         p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
 
         if u_form.is_valid() and p_form.is_valid():
@@ -25,8 +25,8 @@ def dashboard(request):
         u_form = UserUpdateForm(instance=request.user)
         # Ensure profile exists for GET request too
         if not hasattr(request.user, 'profile'):
-             from .models import Profile
-             Profile.objects.create(user=request.user)
+            from .models import Profile
+            Profile.objects.create(user=request.user)
         p_form = ProfileUpdateForm(instance=request.user.profile)
 
     # Fetch orders for the current user
