@@ -1,42 +1,59 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<section class="hero">
-    <h1>Exclusive Collection</h1>
-    <p>Premium management for your style.</p>
+<section class="p-5 mb-4 bg-light rounded-3 text-center">
+    <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold">LAManagement</h1>
+        <p class="col-md-8 fs-4 mx-auto">la mejor forma de gestionar tus productos.</p>
+    </div>
 </section>
 
-<div class="product-grid">
+<div class="row row-cols-1 row-cols-md-3 g-4">
     {% for product in products %}
-    <div class="product-card">
-        {% if product.image %}
-        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
-        {% else %}
-        <div class="no-image">No Image</div>
-        {% endif %}
-        <div class="product-info">
-            <h3>{{ product.name }}</h3>
-            <p class="desc">{{ product.description|truncatewords:10 }}</p>
-            <p class="price">${{ product.price }}</p>
+    <div class="col">
+        <div class="card h-100 shadow-sm">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 250px; object-fit: cover;">
+            {% else %}
+            <div class="d-flex align-items-center justify-content-center bg-secondary text-white" style="height: 250px;">
+                <span>No Image</span>
+            </div>
+            {% endif %}
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">{{ product.name }}</h5>
+                <p class="card-text text-muted mb-4">{{ product.description|truncatewords:10 }}</p>
+                <h6 class="card-subtitle mb-3 text-primary fw-bold">${{ product.price }}</h6>
+                
+                <div class="mt-auto">
+                    <div class="d-grid gap-2 mb-2">
+                        <a href="{% url 'product_detail' product.pk %}" class="btn btn-outline-dark">View Details</a>
+                    </div>
 
-            <div class="actions">
-                {% if user.is_superuser %}
-                <a href="{% url 'product_update' product.pk %}" class="btn btn-sm btn-secondary">Edit</a>
-                <form action="{% url 'product_delete' product.pk %}" method="POST" style="display:inline;"
-                    onsubmit="return confirm('Are you sure?');">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                </form>
-                {% elif user.is_authenticated %}
-                <a href="{% url 'place_order' product.id %}" class="btn btn-primary btn-block">Buy Now</a>
-                {% else %}
-                <a href="{% url 'login' %}" class="btn btn-outline btn-block">Login to Buy</a>
-                {% endif %}
+                    {% if user.is_superuser %}
+                    <div class="d-grid gap-2 d-md-block">
+                        <a href="{% url 'product_update' product.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                        <form action="{% url 'product_delete' product.pk %}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                        </form>
+                    </div>
+                    {% elif user.is_authenticated %}
+                    <div class="d-grid">
+                        <a href="{% url 'place_order' product.id %}" class="btn btn-primary">Buy Now</a>
+                    </div>
+                    {% else %}
+                    <div class="d-grid">
+                        <a href="{% url 'login' %}" class="btn btn-outline-primary">Login to Buy</a>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
     {% empty %}
-    <p class="no-products">No products available yet.</p>
+    <div class="col-12 text-center">
+        <p class="text-muted">No products available yet.</p>
+    </div>
     {% endfor %}
 </div>
 
