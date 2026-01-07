@@ -1,132 +1,178 @@
-{% extends 'base.html' %}
-
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 
 <div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2>Inventory Dashboard</h2>
-            <p class="text-muted">Manage your stock and products efficiently.</p>
-        </div>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2
+        style="
+          font-family: 'Playfair Display', serif;
+          color: var(--secondary-color-2);
+        "
+      >
+        Inventory Dashboard
+      </h2>
+      <p class="text-muted">Manage your stock and products efficiently.</p>
     </div>
+  </div>
 
-    <!-- Metrics Cards -->
-    <div class="row g-4 mb-5">
-        <div class="col-md-4">
-            <div class="card shadow-sm border-0 h-100">
-                <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">Total Products</h6>
-                    <h2 class="card-title mb-0">{{ total_products }}</h2>
-                </div>
-            </div>
+  <!-- Metrics Cards -->
+  <div class="row g-4 mb-5">
+    <div class="col-md-4">
+      <div
+        class="card shadow-sm border-0 h-100 rounded-4"
+        style="background-color: white"
+      >
+        <div class="card-body">
+          <h6
+            class="card-subtitle mb-2 text-muted"
+            style="color: var(--secondary-color-2) !important"
+          >
+            Total Products
+          </h6>
+          <h2 class="card-title mb-0" style="color: var(--secondary-color-2)">
+            {{ total_products }}
+          </h2>
         </div>
-        <div class="col-md-4">
-            <div class="card shadow-sm border-0 h-100">
-                <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">Low Stock Alerts</h6>
-                    <h2 class="card-title mb-0 {% if low_stock > 0 %}text-danger{% endif %}">{{ low_stock }}</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card shadow-sm border-0 h-100">
-                <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">Total Value</h6>
-                    <h2 class="card-title mb-0">${{ total_value|floatformat:2 }}</h2>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
-
-    <!-- Controls -->
-    <div class="row mb-4 align-items-center">
-        <div class="col-md-8">
-            <form method="GET" action="{% url 'inventory_index' %}" class="d-flex">
-                <input type="text" name="q" class="form-control me-2" placeholder="Search products..." value="{{ search_query }}">
-                <button type="submit" class="btn btn-outline-secondary">Search</button>
-            </form>
+    <div class="col-md-4">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body">
+          <h6 class="card-subtitle mb-2 text-muted">Low Stock Alerts</h6>
+          <h2
+            class="card-title mb-0 {% if low_stock > 0 %}text-danger{% endif %}"
+          >
+            {{ low_stock }}
+          </h2>
         </div>
-        <div class="col-md-4 text-md-end mt-3 mt-md-0">
-            <!-- Button trigger modal -->
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
-                + Add Product
-            </button>
-        </div>
+      </div>
     </div>
-
-    <!-- Product Table -->
-    <div class="card shadow-sm border-0">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th class="ps-4">Product Name</th>
-                            <th>Price</th>
-                            <th>Stock Level</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for product in products %}
-                        <tr>
-                            <td class="ps-4">
-                                <span class="fw-bold d-block">{{ product.name }}</span>
-                                <small class="text-muted">Added: {{ product.created_at|date:"M d, Y" }}</small>
-                            </td>
-                            <td>${{ product.price|floatformat:2 }}</td>
-                            <td class="{% if product.stock < 10 %}text-danger fw-bold{% else %}text-success{% endif %}">
-                                {{ product.stock }} Units
-                            </td>
-                            <td>
-                                {% if product.stock == 0 %}
-                                    <span class="badge bg-danger rounded-pill">Out of Stock</span>
-                                {% elif product.stock < 10 %}
-                                    <span class="badge bg-warning text-dark rounded-pill">Low Stock</span>
-                                {% else %}
-                                    <span class="badge bg-success rounded-pill">In Stock</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="4" class="text-center p-5 text-muted">
-                                <p class="mb-0">No products found matching your criteria.</p>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+    <div class="col-md-4">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body">
+          <h6 class="card-subtitle mb-2 text-muted">Total Value</h6>
+          <h2 class="card-title mb-0">${{ total_value|floatformat:2 }}</h2>
         </div>
+      </div>
     </div>
+  </div>
 
-    <!-- Add Product Modal -->
-    <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addProductModalLabel">Add New Product</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form method="POST" enctype="multipart/form-data">
-                        {% csrf_token %}
-                         <!-- Django Form Rendering with Bootstrap classes usually requires a package like crispy-forms or manual rendering. 
+  <!-- Controls -->
+  <div class="row mb-4 align-items-center">
+    <div class="col-md-8">
+      <form method="GET" action="{% url 'inventory_index' %}" class="d-flex">
+        <input
+          type="text"
+          name="q"
+          class="form-control me-2"
+          placeholder="Search products..."
+          value="{{ search_query }}"
+        />
+        <button type="submit" class="btn btn-outline-secondary">Search</button>
+      </form>
+    </div>
+    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+      <!-- Button trigger modal -->
+      <button
+        type="button"
+        class="btn btn-primary-custom"
+        data-bs-toggle="modal"
+        data-bs-target="#addProductModal"
+      >
+        + Add Product
+      </button>
+    </div>
+  </div>
+
+  <!-- Product Table -->
+  <div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="ps-4">Product Name</th>
+              <th>Price</th>
+              <th>Stock Level</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for product in products %}
+            <tr>
+              <td class="ps-4">
+                <span class="fw-bold d-block">{{ product.name }}</span>
+                <small class="text-muted"
+                  >Added: {{ product.created_at|date:"M d, Y" }}</small
+                >
+              </td>
+              <td>${{ product.price|floatformat:2 }}</td>
+              <td
+                class="{% if product.stock < 10 %}text-danger fw-bold{% else %}text-success{% endif %}"
+              >
+                {{ product.stock }} Units
+              </td>
+              <td>
+                {% if product.stock == 0 %}
+                <span class="badge bg-danger rounded-pill">Out of Stock</span>
+                {% elif product.stock < 10 %}
+                <span class="badge bg-warning text-dark rounded-pill"
+                  >Low Stock</span
+                >
+                {% else %}
+                <span class="badge bg-success rounded-pill">In Stock</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4" class="text-center p-5 text-muted">
+                <p class="mb-0">No products found matching your criteria.</p>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Product Modal -->
+  <div
+    class="modal fade"
+    id="addProductModal"
+    tabindex="-1"
+    aria-labelledby="addProductModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addProductModalLabel">Add New Product</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <!-- Django Form Rendering with Bootstrap classes usually requires a package like crispy-forms or manual rendering. 
                               For now, we assume basic rendering or add a wrapper class if needed. 
                               Since user just asked for "legible", standard as_p is okay but we can wrap it. -->
-                        <div class="mb-3">
-                            {{ form.as_p }}
-                        </div>
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">Save Product</button>
-                        </div>
-                    </form>
-                </div>
+            <div class="mb-3">{{ form.as_p }}</div>
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary">
+                Save Product
+              </button>
             </div>
+          </form>
         </div>
+      </div>
     </div>
-
+  </div>
 </div>
 <!-- No custom script needed for Boostrap 5 modal -->
 {% endblock %}

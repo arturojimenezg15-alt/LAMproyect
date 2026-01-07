@@ -3,16 +3,26 @@
   <div class="row justify-content-center">
     <div class="col-md-8 col-lg-6">
       <div
-        class="card card-modern shadow-lg border-0"
-        style="background-color: var(--secondary-color-1)"
+        class="card shadow-lg border-0 rounded-4 overflow-hidden"
+        style="background-color: white"
       >
-        <div class="card-header bg-transparent border-0 pt-4 pb-2 text-center">
-          <h2 class="fw-bold text-white mb-0">
-            {% if '/update/' in request.path %} Editar Producto {% else %} Crear
-            Nuevo Producto {% endif %}
+        <div class="card-header bg-transparent border-0 pt-5 pb-2 text-center">
+          <h2
+            class="fw-bold mb-0"
+            style="
+              font-family: 'Playfair Display', serif;
+              color: var(--secondary-color-2);
+            "
+          >
+            {% if '/update/' in request.path %} Editar Pieza<span
+              class="brand-dot"
+              >.</span
+            >
+            {% else %} Nueva Publicación<span class="brand-dot">.</span>
+            {% endif %}
           </h2>
-          <p class="text-white-50 small">
-            Completa los detalles a continuación
+          <p class="text-muted small mt-2">
+            Define los detalles de tu artículo de lujo
           </p>
         </div>
         <div class="card-body p-4 p-md-5">
@@ -27,7 +37,8 @@
             <div class="mb-4">
               <label
                 for="{{ form.name.id_for_label }}"
-                class="form-label text-white fw-semibold"
+                class="form-label fw-semibold"
+                style="color: var(--secondary-color-2)"
                 >{{ form.name.label }}</label
               >
               {{ form.name }} {% if form.name.errors %}
@@ -39,13 +50,12 @@
               <div class="col-md-6 mb-4">
                 <label
                   for="{{ form.price.id_for_label }}"
-                  class="form-label text-white fw-semibold"
+                  class="form-label fw-semibold"
+                  style="color: var(--secondary-color-2)"
                   >{{ form.price.label }}</label
                 >
                 <div class="input-group">
-                  <span class="input-group-text bg-white-10 border-0 text-dark"
-                    >$</span
-                  >
+                  <span class="input-group-text">$</span>
                   {{ form.price }}
                 </div>
                 {% if form.price.errors %}
@@ -57,7 +67,8 @@
               <div class="col-md-6 mb-4">
                 <label
                   for="{{ form.stock.id_for_label }}"
-                  class="form-label text-white fw-semibold"
+                  class="form-label fw-semibold"
+                  style="color: var(--secondary-color-2)"
                   >{{ form.stock.label }}</label
                 >
                 {{ form.stock }} {% if form.stock.errors %}
@@ -68,14 +79,41 @@
               </div>
             </div>
 
-            <div class="mb-4">
+            <!-- Premium Image Upload -->
+            <div class="mb-5 text-center">
               <label
-                for="{{ form.image.id_for_label }}"
-                class="form-label text-white fw-semibold"
-                >{{ form.image.label }}</label
+                class="form-label fw-bold d-block text-start mb-3"
+                style="color: var(--secondary-color-2)"
+                >Imagen del Producto</label
               >
-              {{ form.image }} {% if form.image.errors %}
-              <div class="text-danger small mt-1">
+              <div
+                class="image-upload-wrapper position-relative mx-auto rounded-4 overflow-hidden shadow-sm border border-2 border-dashed"
+                style="
+                  height: 300px;
+                  background-color: #fdfaf7;
+                  border-color: #d1c4b9;
+                "
+              >
+                <div
+                  id="imagePreview"
+                  class="w-100 h-100 d-flex flex-column align-items-center justify-content-center text-muted"
+                >
+                  <i
+                    class="bi bi-cloud-arrow-up display-3 mb-2"
+                    style="color: var(--secondary-color-2)"
+                  ></i>
+                  <p class="mb-0 fw-semibold">Cargar fotografía</p>
+                  <small>Recomendado: Fondo neutro</small>
+                </div>
+                <!-- Input oculto pero vinculado por label -->
+                <label
+                  for="{{ form.image.id_for_label }}"
+                  class="stretched-link cursor-pointer"
+                ></label>
+                <div class="d-none">{{ form.image }}</div>
+              </div>
+              {% if form.image.errors %}
+              <div class="text-danger small mt-2 text-start">
                 {{ form.image.errors.0 }}
               </div>
               {% endif %}
@@ -84,7 +122,8 @@
             <div class="mb-5">
               <label
                 for="{{ form.description.id_for_label }}"
-                class="form-label text-white fw-semibold"
+                class="form-label fw-semibold"
+                style="color: var(--secondary-color-2)"
                 >{{ form.description.label }}</label
               >
               {{ form.description }} {% if form.description.errors %}
@@ -95,16 +134,13 @@
             </div>
 
             <div class="d-grid gap-2">
-              <button
-                type="submit"
-                class="btn btn-primary-custom btn-lg shadow-sm"
-              >
+              <button type="submit" class="btn btn-primary-custom btn-lg">
                 {% if '/update/' in request.path %} Guardar Cambios {% else %}
                 Publicar Producto {% endif %}
               </button>
               <a
                 href="{% url 'product_list' %}"
-                class="btn btn-outline-light-custom btn-sm mt-2"
+                class="btn btn-outline-light-custom btn-sm mt-3"
                 >Cancelar</a
               >
             </div>
@@ -114,4 +150,24 @@
     </div>
   </div>
 </div>
-{% endblock %}
+{% block extra_js %}
+<script>
+  // Previsualización de imagen premium
+  const imageInput = document.getElementById("{{ form.image.id_for_label }}");
+  const previewContainer = document.getElementById("imagePreview");
+
+  if (imageInput) {
+    imageInput.addEventListener("change", function () {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          previewContainer.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover;">`;
+          previewContainer.classList.remove("text-muted");
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+</script>
+{% endblock %} {% endblock %}

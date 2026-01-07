@@ -4,23 +4,27 @@
     <div class="col-md-10 col-lg-8">
       <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
-          <!-- Custom breadcrumb styling embedded or rely on default text colors adjusted globally -->
           <li class="breadcrumb-item">
             <a
               href="{% url 'product_list' %}"
-              class="text-light text-decoration-underline"
+              class="text-decoration-none"
+              style="color: var(--secondary-color-2); opacity: 0.7"
               >Inicio</a
             >
           </li>
-          <li class="breadcrumb-item active text-white-50" aria-current="page">
+          <li
+            class="breadcrumb-item active"
+            style="color: var(--secondary-color-2); font-weight: 600"
+            aria-current="page"
+          >
             {{ product.name }}
           </li>
         </ol>
       </nav>
 
       <div
-        class="card card-modern shadow-lg overflow-hidden"
-        style="background-color: #162c66"
+        class="card shadow-lg overflow-hidden border-0 rounded-4"
+        style="background-color: white"
       >
         <div class="row g-0">
           <div
@@ -41,24 +45,38 @@
           </div>
           <div class="col-md-6">
             <div class="card-body p-4 d-flex flex-column h-100">
-              <h1 class="card-title fw-bold mb-2 display-6">
-                {{ product.name }}
+              <h1
+                class="card-title fw-bold mb-2 display-6"
+                style="
+                  font-family: 'Playfair Display', serif;
+                  color: var(--secondary-color-2);
+                "
+              >
+                {{ product.name }}<span class="brand-dot">.</span>
               </h1>
-              <p class="card-text text-white-50 mb-4 small">
+              <p class="card-text text-muted mb-4 small">
                 Agregado el {{ product.created_at|date:"d F Y" }}
               </p>
 
-              <h3 class="fw-bold mb-4" style="color: #4db8ff">
+              <h3
+                class="fw-bold mb-4"
+                style="
+                  font-family: 'Playfair Display', serif;
+                  color: #e67e22;
+                  font-size: 2.5rem;
+                "
+              >
                 ${{ product.price }}
               </h3>
 
               <div class="mb-4 flex-grow-1">
-                <h5 class="fw-bold fs-6 border-bottom border-light pb-2 mb-3">
+                <h5
+                  class="fw-bold fs-6 border-bottom pb-2 mb-3"
+                  style="color: var(--secondary-color-2)"
+                >
                   Descripción
                 </h5>
-                <p class="card-text text-light">
-                  {{ product.description|linebreaks }}
-                </p>
+                <p class="card-text">{{ product.description|linebreaks }}</p>
               </div>
 
               <div class="mt-auto">
@@ -79,9 +97,16 @@
                 <div class="d-grid">
                   <a
                     href="#"
-                    class="btn btn-primary-custom btn-lg shadow-sm"
+                    class="btn btn-lg shadow-sm"
+                    style="
+                      background-color: #57342d;
+                      color: #e67e22;
+                      border-radius: 12px;
+                      font-weight: 700;
+                      letter-spacing: 0.05em;
+                    "
                     onclick="alert('Funcionalidad de compra en desarrollo')"
-                    >Comprar Ahora</a
+                    >COMPRAR AHORA</a
                   >
                 </div>
                 {% else %}
@@ -92,18 +117,30 @@
                     >Iniciar sesión para comprar</a
                   >
                 </div>
-                {% endif %} {% if user.is_superuser %}
+                {% endif %} {% if user == product.seller or user.is_superuser %}
                 <div
-                  class="d-grid gap-2 d-md-flex mt-3 pt-3 border-top border-secondary justify-content-md-end"
+                  class="d-grid gap-2 d-md-flex mt-3 pt-3 border-top border-light justify-content-md-end"
                 >
                   <a
                     href="{% url 'product_update' product.pk %}"
-                    class="btn btn-sm btn-outline-warning"
-                    >Editar Producto</a
+                    class="btn text-white"
+                    style="
+                      background-color: var(--secondary-color-2);
+                      border-radius: 8px;
+                    "
+                    >Editar Pieza</a
                   >
                   <a
                     href="{% url 'product_delete' product.pk %}"
-                    class="btn btn-sm btn-outline-danger"
+                    class="btn btn-sm btn-outline-light-custom"
+                    style="
+                      border-color: #57342d;
+                      color: #57342d;
+                      border-radius: 8px;
+                      font-weight: 500;
+                    "
+                    onmouseover="this.style.backgroundColor='#57342d'; this.style.color='#e67e22';"
+                    onmouseout="this.style.backgroundColor='transparent'; this.style.color='#57342d';"
                     >Eliminar</a
                   >
                 </div>

@@ -4,38 +4,37 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>L.A.Management</title>
+    <title>LAManagement</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:wght@400;500;600&family=Stack+Sans+Notch:wght@200..700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
       rel="stylesheet"
     />
     <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
-      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
-      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
     />
   </head>
 
-  <body style="background-color: #193070">
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-      crossorigin="anonymous"
-    ></script>
+  <body style="background-color: #e4cdb2">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/main.js' %}"></script>
 
-    <!-- Floating Navbar -->
-    <div
-      class="container sticky-top rounded"
-      style="background-color: #091a47; border-radius: 10px; margin-top: 2rem"
-    >
+    {% block navbar %}
+    <div class="container sticky-top mt-4">
       <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
         <div class="container-fluid">
-          <a class="navbar-brand fw-bold" href="{% url 'product_list' %}"
-            ><span style="color: #ffd700">LAM</span>anagement</a
+          <a
+            style="font-family: 'Playfair Display', serif; margin-left: 1rem"
+            class="navbar-brand fw-bold"
+            href="{% url 'product_list' %}"
+            ><span class="brand-dot">LAM</span>anagement<span class="brand-dot">.</span></a
           >
           <button
             class="navbar-toggler"
@@ -57,21 +56,22 @@
               {% if user.is_superuser %}
               <li class="nav-item">
                 <a href="{% url 'dashboard_home' %}" class="nav-link"
-                  ><span style="color: #ffd700">D</span>ashboard</a
+                  ><span class="brand-dot">D</span>ashboard</a
                 >
               </li>
               <li class="nav-item">
                 <a
                   href="{% url 'product_create' %}"
                   class="nav-link bi bi-plus-lg"
-                  ><span style="color: #ffd700">+</span> Product</a
+                >
+                  <span class="brand-dot">P</span>roduct</a
                 >
               </li>
               {% endif %}
 
               <li class="nav-item">
                 <a href="{% url 'inventory_index' %}" class="nav-link"
-                  >Inventory</a
+                  ><span class="brand-dot">I</span>nventory</a
                 >
               </li>
 
@@ -94,11 +94,27 @@
                 >
                   {% csrf_token %}
                   <button
-                    style="color: #d60f0fe2"
+                    style="color: #e67e22"
                     type="submit"
                     class="btn btn-sm btn-outline-light-custom"
                   >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="25"
+                      height="25"
+                      fill="currentColor"
+                      class="bi bi-box-arrow-right"
+                      viewBox="0 0 16 16"
                     >
+                      <path
+                        fill-rule="evenodd"
+                        d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"
+                      />
+                      <path
+                        fill-rule="evenodd"
+                        d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"
+                      />
+                    </svg>
                   </button>
                 </form>
               </li>
@@ -107,6 +123,7 @@
         </div>
       </nav>
     </div>
+    {% endblock %}
 
     <main class="container content flex-grow-1 mt-4">
       {% if messages %}
@@ -133,7 +150,7 @@
 
     <footer
       class="footer mt-auto py-4 text-center"
-      style="background-color: var(--secondary-color-2); color: white"
+      style="background-color: #57342d"
     >
       <div class="container">
         <span class="text-light-50"

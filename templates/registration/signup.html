@@ -1,12 +1,93 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% block navbar %}
+<div class="container mt-4 text-center">
+  <a
+    style="
+      font-family: 'Playfair Display', serif;
+      color: var(--secondary-color-2);
+      font-size: 2.5rem;
+    "
+    class="text-decoration-none fw-bold"
+    href="{% url 'product_list' %}"
+    >LAManagement</a
+  >
+</div>
+{% endblock %} {% block content %}
+<div class="auth-wrapper">
+  <div class="auth-container signup-active" id="authContainer">
+    <div class="auth-toggle-buttons mx-5 mt-4">
+      <div class="auth-toggle-slider"></div>
+      <button
+        class="auth-toggle-btn {% if request.resolver_match.url_name == 'login' %}active{% endif %}"
+        onclick="switchToLogin()"
+      >
+        Login
+      </button>
+      <button
+        class="auth-toggle-btn {% if request.resolver_match.url_name == 'signup' %}active{% endif %}"
+        onclick="switchToSignup()"
+      >
+        Sign Up
+      </button>
+    </div>
 
-{% block content %}
+    <div class="auth-form-wrapper">
+      <!-- Login Form (Inactive but present for transition) -->
+      <div class="auth-form-content" id="loginFormSection">
+        <div class="auth-header">
+          <h2>Bienvenido</h2>
+          <p class="text-muted small">Ingresa tus credenciales</p>
+        </div>
+        <p class="text-center text-muted py-4">
+          Haz clic arriba para iniciar sesión
+        </p>
+        <div class="d-grid mt-4">
+          <button
+            type="button"
+            onclick="switchToLogin()"
+            class="btn btn-outline-light-custom btn-lg"
+          >
+            Ir a Login
+          </button>
+        </div>
+      </div>
 
-    <h2>Sign Up</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Sign Up</button>
-    </form>
+      <!-- Signup Form -->
+      <div class="auth-form-content" id="signupFormSection">
+        <div class="auth-header">
+          <h2>Crea tu cuenta</h2>
+          <p class="text-muted small">Únete a LAManagement</p>
+        </div>
+        <form method="post" action="{% url 'signup' %}">
+          {% csrf_token %} {% for field in form %}
+          <div class="mb-3">
+            <label
+              class="form-label fw-semibold"
+              style="color: var(--secondary-color-2)"
+              >{{ field.label }}</label
+            >
+            {{ field }} {% if field.errors %}
+            <div class="text-danger small mt-1">{{ field.errors.0 }}</div>
+            {% endif %}
+          </div>
+          {% endfor %}
+          <div class="d-grid mt-4">
+            <button type="submit" class="btn btn-primary-custom btn-lg">
+              Registrarse
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 
+<script>
+  function switchToLogin() {
+    window.location.href = '{% url "login" %}';
+  }
+
+  function switchToSignup() {
+    // Already here
+  }
+</script>
 {% endblock %}
