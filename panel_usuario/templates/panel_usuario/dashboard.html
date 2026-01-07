@@ -159,16 +159,22 @@
                 <tr>
                   <td class="fw-bold">#{{ order.id }}</td>
                   <td class="text-muted">
-                    {{ order.created_at|date:"d M, Y" }}
+                    {{ order.fecha_creacion|date:"d M, Y" }}
                   </td>
-                  <td class="fw-semibold">{{ order.product.name }}</td>
+                  <td class="fw-semibold">
+                    {% if order.producto %} {{ order.producto.name }} {% else %}
+                    <span class="text-muted">Producto eliminado</span>
+                    {% endif %}
+                  </td>
                   <td class="fw-bold" style="color: var(--accent-orange)">
-                    ${{ order.product.price }}
+                    ${{ order.total }}
                   </td>
                   <td>
-                    <span class="badge badge-luxury text-success"
-                      >Completado</span
+                    <span
+                      class="badge badge-luxury {% if order.estado == 'pendiente' %}text-warning{% elif order.estado == 'pagado' %}text-info{% elif order.estado == 'enviado' %}text-primary{% elif order.estado == 'entregado' %}text-success{% else %}text-danger{% endif %}"
                     >
+                      {{ order.get_estado_display }}
+                    </span>
                   </td>
                 </tr>
                 {% endfor %}

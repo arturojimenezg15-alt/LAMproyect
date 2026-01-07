@@ -1,0 +1,141 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <a
+          href="{% url 'lista_pedidos' %}"
+          class="text-decoration-none text-muted small"
+        >
+          <i class="bi bi-arrow-left me-1"></i> Volver a mis pedidos
+        </a>
+        <span
+          class="badge rounded-pill px-3 py-2 {% if pedido.estado == 'pagado' %}bg-info {% elif pedido.estado == 'enviado' %}bg-primary {% elif pedido.estado == 'entregado' %}bg-success {% else %}bg-secondary{% endif %}"
+        >
+          {{ pedido.get_estado_display }}
+        </span>
+      </div>
+
+      <div class="card border-0 shadow-lg rounded-4 overflow-hidden mb-4">
+        <div class="card-header bg-white border-0 pt-4 px-4">
+          <h2
+            class="fw-bold mb-0"
+            style="
+              font-family: 'Playfair Display', serif;
+              color: var(--secondary-color-2);
+            "
+          >
+            Pedido #{{ pedido.id }}<span class="brand-dot">.</span>
+          </h2>
+          <p class="text-muted small mb-0">
+            Realizado el {{ pedido.fecha_creacion|date:"d F Y, h:i A" }}
+          </p>
+        </div>
+
+        <div class="card-body p-4">
+          <!-- Item Detail -->
+          <div class="d-flex align-items-center bg-light p-3 rounded-3 mb-4">
+            {% if pedido.producto.image %}
+            <img
+              src="{{ pedido.producto.image.url }}"
+              class="rounded shadow-sm"
+              style="width: 80px; height: 80px; object-fit: cover"
+            />
+            {% endif %}
+            <div class="ms-3">
+              <h5 class="fw-bold mb-1">
+                {{ pedido.producto.name|default:"Producto eliminado" }}
+              </h5>
+              <p class="text-muted small mb-0">
+                Precio Unitario: ${{ pedido.precio_unidad }}
+              </p>
+            </div>
+            <div class="ms-auto text-end">
+              <span class="d-block text-muted small text-uppercase fw-bold"
+                >Total</span
+              >
+              <span class="h4 fw-bold" style="color: var(--accent-orange)"
+                >${{ pedido.total }}</span
+              >
+            </div>
+          </div>
+
+          <div class="row g-4">
+            <!-- Customer/Seller Info -->
+            <div class="col-md-6">
+              <div class="p-3 border rounded-3 h-100">
+                <h6 class="fw-bold text-muted text-uppercase small mb-3">
+                  Información de las Partes
+                </h6>
+                <p class="mb-1">
+                  <small class="text-muted">Comprador:</small>
+                  <strong>{{ pedido.comprador.username }}</strong>
+                </p>
+                <p class="mb-0">
+                  <small class="text-muted">Vendedor:</small>
+                  <strong>{{ pedido.vendedor.username }}</strong>
+                </p>
+              </div>
+            </div>
+
+            <!-- Payment Info -->
+            <div class="col-md-6">
+              <div class="p-3 border rounded-3 h-100">
+                <h6 class="fw-bold text-muted text-uppercase small mb-3">
+                  Detalle del Pago
+                </h6>
+                <p class="mb-1">
+                  <small class="text-muted">Método:</small>
+                  <strong
+                    >{{ pedido.get_metodo_pago_display|default:"No especificado"
+                    }}</strong
+                  >
+                </p>
+                <p class="mb-0">
+                  <small class="text-muted">Referencia:</small>
+                  <strong
+                    >{{ pedido.referencia_pago|default:"Pendiente" }}</strong
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {% if request.user == pedido.vendedor %}
+        <div class="card-footer bg-white border-0 p-4 pt-0 text-center">
+          <hr class="mb-4 opacity-10" />
+          <h6 class="fw-bold mb-3">Gestión de Vendedor</h6>
+          <div class="d-flex justify-content-center gap-2">
+            <button
+              class="btn btn-outline-dark rounded-pill px-4"
+              onclick="alert('Funcionalidad de cambio de estado próximamente')"
+            >
+              Actualizar Estado
+            </button>
+            <button class="btn btn-primary-custom rounded-pill px-4">
+              Confirmar Pago
+            </button>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="alert alert-warning border-0 rounded-4 shadow-sm py-4">
+        <div class="d-flex">
+          <i class="bi bi-info-circle-fill fs-3 me-3"></i>
+          <div>
+            <h6 class="fw-bold">Nota Importante</h6>
+            <p class="small mb-0">
+              Recuerda que L.A. Management es una plataforma de gestión. El
+              envío y la entrega definitiva deben ser coordinados directamente
+              entre el comprador y el vendedor a través del contacto
+              proporcionado en sus perfiles.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

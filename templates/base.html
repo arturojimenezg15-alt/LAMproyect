@@ -34,7 +34,9 @@
             style="font-family: 'Playfair Display', serif; margin-left: 1rem"
             class="navbar-brand fw-bold"
             href="{% url 'product_list' %}"
-            ><span class="brand-dot">LAM</span>anagement<span class="brand-dot">.</span></a
+            ><span class="brand-dot">LAM</span>anagement<span class="brand-dot"
+              >.</span
+            ></a
           >
           <button
             class="navbar-toggler"
@@ -76,6 +78,13 @@
               </li>
 
               {% if user.is_authenticated %}
+                <a
+                  href="{% url 'lista_pedidos' %}"
+                  class="nav-link text-light"
+                >
+                  <i class="bi bi-bag-fill me-1"></i>Mis Pedidos
+                </a>
+              </li>
               <li class="nav-item">
                 <a
                   href="{% url 'user_panel' %}"
@@ -149,14 +158,134 @@
     </main>
 
     <footer
-      class="footer mt-auto py-4 text-center"
-      style="background-color: #57342d"
+      class="footer mt-auto pt-5 pb-4"
+      style="
+        background-color: #3d241f;
+        border-top: 5px solid var(--accent-orange);
+      "
     >
-      <div class="container">
-        <span class="text-light-50"
-          >&copy; 2025 L.A.Management. All rights reserved.</span
-        >
+      <div class="container text-md-start text-center">
+        <div class="row">
+          <!-- Brand Section -->
+          <div class="col-md-4 mb-4 mb-md-0">
+            <h4
+              class="fw-bold mb-3"
+              style="font-family: 'Playfair Display', serif; color: #e4ded0"
+            >
+              <span class="brand-dot">LAM</span>anagement<span class="brand-dot"
+                >.</span
+              >
+            </h4>
+            <p class="text-white-50 small pe-md-4">
+              La plataforma definitiva para la gestión de piezas de lujo y moda
+              con estilo. Elevamos tu experiencia de venta y compra a un nivel
+              de exclusividad sin precedentes.
+            </p>
+            <div
+              class="d-flex justify-content-center justify-content-md-start gap-3 mt-4"
+            >
+              <a href="#" class="social-link"
+                ><i class="bi bi-instagram"></i
+              ></a>
+              <a href="#" class="social-link"><i class="bi bi-tiktok"></i></a>
+              <a href="#" class="social-link"><i class="bi bi-facebook"></i></a>
+              <a href="#" class="social-link"><i class="bi bi-whatsapp"></i></a>
+            </div>
+          </div>
+
+          <!-- Quick Links -->
+          <div class="col-md-4 mb-4 mb-md-0">
+            <h5
+              class="fw-bold mb-3"
+              style="font-family: 'Playfair Display', serif; color: #e67e22"
+            >
+              Enlaces Rápidos
+            </h5>
+            <ul class="list-unstyled">
+              <li class="mb-2">
+                <a href="{% url 'product_list' %}" class="footer-link"
+                  >Catálogo Exclusivo</a
+                >
+              </li>
+              <li class="mb-2">
+                <a href="{% url 'inventory_index' %}" class="footer-link"
+                  >Gestión de Inventario</a
+                >
+              </li>
+              <li class="mb-2">
+                <a href="{% url 'dashboard_home' %}" class="footer-link"
+                  >Panel de Control</a
+                >
+              </li>
+              <li class="mb-2">
+                <a href="{% url 'product_create' %}" class="footer-link"
+                  >Publicar Nueva Pieza</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <!-- Contact / Support -->
+          <div class="col-md-4">
+            <h5
+              class="fw-bold mb-3"
+              style="font-family: 'Playfair Display', serif; color: #e67e22"
+            >
+              Contacto y Soporte
+            </h5>
+            <ul class="list-unstyled text-white-50 small">
+              <li class="mb-2">
+                <i
+                  class="bi bi-geo-alt-fill me-2"
+                  style="color: var(--accent-orange)"
+                ></i>
+                Caracas, Venezuela
+              </li>
+              <li class="mb-2">
+                <i
+                  class="bi bi-envelope-fill me-2"
+                  style="color: var(--accent-orange)"
+                ></i>
+                exclusive@lamanagement.com
+              </li>
+              <li class="mb-2">
+                <i
+                  class="bi bi-telephone-fill me-2"
+                  style="color: var(--accent-orange)"
+                ></i>
+                +58 (412) 555-0123
+              </li>
+              <li class="mt-3">
+                <small>Soporte disponible 24/7 para clientes Premium.</small>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <hr class="mt-5 mb-4 border-light opacity-10" />
+
+        <div class="row align-items-center">
+          <div class="col-md-6 text-center text-md-start">
+            <span class="text-white-50 small"
+              >&copy; 2025 L.A.Management<span class="brand-dot">.</span> Todos
+              los derechos reservados.</span
+            >
+          </div>
+          <div class="col-md-6 text-center text-md-end mt-2 mt-md-0">
+            <a
+              href="#"
+              class="text-white-50 text-decoration-none small me-3 footer-mini-link"
+              >Privacidad</a
+            >
+            <a
+              href="#"
+              class="text-white-50 text-decoration-none small footer-mini-link"
+              >Términos</a
+            >
+          </div>
+        </div>
       </div>
     </footer>
+    {% block extra_js %}{% endblock %}
   </body>
 </html>

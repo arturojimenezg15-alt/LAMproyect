@@ -59,7 +59,7 @@
               </p>
 
               <h3
-                class="fw-bold mb-4"
+                class="fw-bold mb-0"
                 style="
                   font-family: 'Playfair Display', serif;
                   color: #e67e22;
@@ -68,6 +68,18 @@
               >
                 ${{ product.price }}
               </h3>
+              <div
+                id="bcv-price"
+                class="text-muted mb-4"
+                style="font-family: 'Poppins', sans-serif; font-size: 1.1rem"
+              >
+                <span
+                  class="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+                <span class="ms-1">Calculando precio en Bs...</span>
+              </div>
 
               <div class="mb-4 flex-grow-1">
                 <h5
@@ -95,8 +107,8 @@
 
                 {% if user.is_authenticated %}
                 <div class="d-grid">
-                  <a
-                    href="#"
+                  <button
+                    type="button"
                     class="btn btn-lg shadow-sm"
                     style="
                       background-color: #57342d;
@@ -105,9 +117,11 @@
                       font-weight: 700;
                       letter-spacing: 0.05em;
                     "
-                    onclick="alert('Funcionalidad de compra en desarrollo')"
-                    >COMPRAR AHORA</a
+                    data-bs-toggle="modal"
+                    data-bs-target="#paymentModal"
                   >
+                    COMPRAR AHORA
+                  </button>
                 </div>
                 {% else %}
                 <div class="d-grid">
@@ -153,4 +167,238 @@
     </div>
   </div>
 </div>
-{% endblock %}
+
+<!-- Payment Methods Modal -->
+<div
+  class="modal fade"
+  id="paymentModal"
+  tabindex="-1"
+  aria-labelledby="paymentModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 rounded-4 shadow-lg">
+      <div class="modal-header border-0 pb-0 justify-content-center pt-4">
+        <h3
+          class="modal-title fw-bold"
+          id="paymentModalLabel"
+          style="
+            font-family: 'Playfair Display', serif;
+            color: var(--secondary-color-2);
+          "
+        >
+          Información de Pago<span class="brand-dot">.</span>
+        </h3>
+      </div>
+      <div class="modal-body p-4 pt-2">
+        <p class="text-center text-muted small mb-4">
+          Para concretar la compra de esta pieza, por favor utiliza uno de los
+          siguientes métodos y envía el comprobante al vendedor.
+        </p>
+
+        <form
+          action="{% url 'crear_pedido' product.id %}"
+          method="POST"
+          id="purchaseForm"
+        >
+          {% csrf_token %}
+          <input
+            type="hidden"
+            name="metodo_pago"
+            id="selectedMethod"
+            value=""
+          />
+
+          <!-- Payment Options Accordion -->
+          <div class="accordion accordion-flush" id="paymentAccordion">
+            <!-- Pago Móvil -->
+            <div class="accordion-item border rounded-3 mb-2 overflow-hidden">
+              <h2 class="accordion-header">
+                <button
+                  class="accordion-button collapsed fw-semibold"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapsePm"
+                  onclick="document.getElementById('selectedMethod').value='pago_movil'"
+                  style="
+                    color: var(--secondary-color-2);
+                    background-color: #fcfbf9;
+                  "
+                >
+                  <i class="bi bi-phone me-2 text-warning"></i> Pago Móvil
+                </button>
+              </h2>
+              <div
+                id="collapsePm"
+                class="accordion-collapse collapse"
+                data-bs-parent="#paymentAccordion"
+              >
+                <div class="accordion-body small bg-white">
+                  <div class="d-flex justify-content-between mb-1">
+                    <span>Banco:</span>
+                    <strong class="text-dark">Banesco</strong>
+                  </div>
+                  <div class="d-flex justify-content-between mb-1">
+                    <span>CI:</span>
+                    <strong class="text-dark">V-12.345.678</strong>
+                  </div>
+                  <div class="d-flex justify-content-between mb-1">
+                    <span>Teléfono:</span>
+                    <strong class="text-dark">0412-5550123</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Zelle -->
+            <div class="accordion-item border rounded-3 mb-2 overflow-hidden">
+              <h2 class="accordion-header">
+                <button
+                  class="accordion-button collapsed fw-semibold"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapseZelle"
+                  onclick="document.getElementById('selectedMethod').value='zelle'"
+                  style="
+                    color: var(--secondary-color-2);
+                    background-color: #fcfbf9;
+                  "
+                >
+                  <i class="bi bi-currency-dollar me-2 text-primary"></i> Zelle
+                  / PayPal
+                </button>
+              </h2>
+              <div
+                id="collapseZelle"
+                class="accordion-collapse collapse"
+                data-bs-parent="#paymentAccordion"
+              >
+                <div class="accordion-body small bg-white text-center">
+                  <div class="mb-2">
+                    Correo:
+                    <strong class="text-dark d-block"
+                      >exclusive@lamanagement.com</strong
+                    >
+                  </div>
+                  <span class="text-muted tiny"
+                    >Titular: L.A. Management LLC</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Transferencia -->
+            <div class="accordion-item border rounded-3 mb-2 overflow-hidden">
+              <h2 class="accordion-header">
+                <button
+                  class="accordion-button collapsed fw-semibold"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapseBank"
+                  onclick="document.getElementById('selectedMethod').value='transferencia'"
+                  style="
+                    color: var(--secondary-color-2);
+                    background-color: #fcfbf9;
+                  "
+                >
+                  <i class="bi bi-bank me-2 text-success"></i> Transferencia
+                  Bancaria
+                </button>
+              </h2>
+              <div
+                id="collapseBank"
+                class="accordion-collapse collapse"
+                data-bs-parent="#paymentAccordion"
+              >
+                <div class="accordion-body small bg-white">
+                  <div class="d-flex justify-content-between mb-1">
+                    <span>Banco:</span>
+                    <strong class="text-dark">Banco Mercantil</strong>
+                  </div>
+                  <div class="d-flex justify-content-between mb-1">
+                    <span>Cuenta:</span>
+                    <strong class="text-dark">0105-XXXX-XXXX-XXXX-XXXX</strong>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <span>RIF:</span>
+                    <strong class="text-dark">J-12345678-9</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <label class="form-label small fw-bold"
+              >Referencia de Pago (Opcional)</label
+            >
+            <input
+              type="text"
+              name="referencia_pago"
+              class="form-control form-control-sm"
+              placeholder="Ej: 123456"
+            />
+          </div>
+
+          <div class="mt-4 text-center">
+            <button
+              type="submit"
+              class="btn btn-primary-custom w-100 shadow-sm"
+              onclick="if(!document.getElementById('selectedMethod').value){ alert('Por favor selecciona un método de pago'); return false; }"
+            >
+              CONFIRMAR PEDIDO
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const rawPrice = "{{ product.price }}".replace(',', '.');
+    const usdPrice = parseFloat(rawPrice);
+    const priceContainer = document.getElementById("bcv-price");
+
+    if (isNaN(usdPrice)) {
+      priceContainer.innerHTML = '<small class="text-muted">Error al leer precio USD</small>';
+      return;
+    }
+
+    // Priorizamos la tasa manual del admin si existe
+    const manualRate = {% if manual_rate %}{{ manual_rate }}{% else %}null{% endif %};
+
+    if (manualRate) {
+      const bsPrice = (usdPrice * manualRate).toLocaleString("es-VE", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
+      priceContainer.innerHTML = `Bs. ${bsPrice} <small class="text-muted" style="font-size: 0.8rem;">(Tasa Admin: ${manualRate})</small>`;
+    } else {
+      // Si no hay tasa manual, usamos la API
+      fetch("https://ve.dolarapi.com/v1/dolares/bcv")
+        .then((response) => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+        })
+        .then((data) => {
+          const rate = data.promedio || data.oficial;
+          if (!rate) throw new Error('Rate not found in response');
+
+          const bsPrice = (usdPrice * rate).toLocaleString("es-VE", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          });
+          priceContainer.innerHTML = `Bs. ${bsPrice} <small class="text-muted" style="font-size: 0.8rem;">(Tasa BCV: ${rate})</small>`;
+        })
+        .catch((error) => {
+          console.error("Error fetching BCV rate:", error);
+          priceContainer.innerHTML =
+            '<small class="text-danger">Tasa BCV no disponible</small>';
+        });
+    }
+  });
+</script>
+{% endblock %} {% endblock %}

@@ -351,8 +351,31 @@ a {
 .cursor-pointer {
     cursor: pointer;
 }
+/* Footer Extensions */
+.social-link {
+    color: #e4ded0;
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
 
+.social-link:hover {
+    color: var(--accent-orange);
+    transform: translateY(-3px);
+}
 
+.footer-link {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
 
+.footer-link:hover {
+    color: var(--accent-orange);
+    padding-left: 5px;
+}
 
-
+.footer-mini-link:hover {
+    color: white !important;
+}
