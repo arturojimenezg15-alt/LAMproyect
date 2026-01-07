@@ -1,60 +1,134 @@
 /* Custom styles to complement Bootstrap */
 
+:root {
+    --primary-color: #162C66; /* Deep Blue - Main Background */
+    --secondary-color-1: #165366; /* Teal/Blue-Green - Cards/Sections */
+    --secondary-color-2: #291666; /* Deep Purple/Blue - Accents/Navbar */
+    --text-color-light: #f8f9fa;
+    --text-color-dark: #212529;
+}
+
 body {
-    font-family: 'Inter', sans-serif;
-}
-
-h1 {
-    font-family: "Poppins", sans-serif;
-    font-weight: 600;
-    font-style: normal;
-}
-
-.nav2 {
-    background-color: #165366;
-}
-
-a {
-    font-family: "Poppins", sans-serif;
-    font-weight: 500;
-    font-style: normal;
-}
-
-#LN {
-    color: black;
-    text-decoration: none;
-}
-
-
-h2, h3, h4, h5, h6, .navbar-brand {
-    font-family: "Poppins", sans-serif;
-    font-weight: 500;
-    font-style: normal;
-}
-
-/* Ensure footer sticks to bottom if content is short */
-body {
+    font-family: 'Inter', 'Poppins', sans-serif;
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
 
-/* Optional: Custom scrollbar or other global tweaks can go here */
-.poppins-regular {
-    font-family: "Poppins", sans-serif;
-    font-weight: 400;
-    font-style: normal;
-}
-
-.poppins-medium {
-    font-family: "Poppins", sans-serif;
-    font-weight: 500;
-    font-style: normal;
-}
-
-.poppins-semibold {
+h1, h2, h3, h4, h5, h6, .navbar-brand {
     font-family: "Poppins", sans-serif;
     font-weight: 600;
-    font-style: normal;
 }
+
+a {
+    font-family: "Poppins", sans-serif;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+/* Navbar Customization */
+.navbar-custom {
+    background-color: var(--secondary-color-2);
+    border-radius: 50px; /* Rounded edges */
+    padding: 1rem 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.navbar-custom .nav-link {
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-weight: 500;
+}
+
+.navbar-custom .nav-link:hover, .navbar-custom .nav-link.active {
+    color: #fff !important;
+}
+
+.navbar-custom .navbar-brand {
+    color: #fff !important;
+}
+
+/* Cards */
+.card-modern {
+    background-color: var(--secondary-color-1);
+    border: none;
+    border-radius: 15px;
+    color: white;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-modern:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.card-modern .card-title {
+    color: #fff;
+}
+
+.card-modern .text-muted {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Buttons */
+.btn-primary-custom {
+    background-color: var(--secondary-color-2);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 30px;
+}
+
+.btn-primary-custom:hover {
+    background-color: #2a1b55; /* Slightly darker */
+    color: white;
+}
+
+.btn-outline-light-custom {
+    border: 2px solid white;
+    color: white;
+    border-radius: 30px;
+}
+
+.btn-outline-light-custom:hover {
+    background-color: white;
+    color: var(--secondary-color-2);
+}
+
+/* Section dividers */
+.section-title {
+    position: relative;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.section-title::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background-color: var(--secondary-color-1);
+}
+
+/* Modern Inputs */
+.form-control {
+    border-radius: 10px;
+    padding: 10px 15px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background-color: rgba(255,255,255,0.05);
+    color: white;
+}
+
+.form-control:focus {
+    background-color: rgba(255,255,255,0.1);
+    color: white;
+    border-color: var(--secondary-color-1);
+    box-shadow: none;
+}
+
 

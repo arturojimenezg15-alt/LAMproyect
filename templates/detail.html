@@ -1,69 +1,119 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 <div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-10 col-lg-8">
-            <nav aria-label="breadcrumb" class="mb-4">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{% url 'product_list' %}">Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
-                </ol>
-            </nav>
+  <div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+      <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+          <!-- Custom breadcrumb styling embedded or rely on default text colors adjusted globally -->
+          <li class="breadcrumb-item">
+            <a
+              href="{% url 'product_list' %}"
+              class="text-light text-decoration-underline"
+              >Inicio</a
+            >
+          </li>
+          <li class="breadcrumb-item active text-white-50" aria-current="page">
+            {{ product.name }}
+          </li>
+        </ol>
+      </nav>
 
-            <div class="card shadow-sm border-0 overflow-hidden">
-                <div class="row g-0">
-                    <div class="col-md-6 bg-light d-flex align-items-center justify-content-center" style="min-height: 400px;">
-                        {% if product.image %}
-                        <img src="{{ product.image.url }}" class="img-fluid" alt="{{ product.name }}" style="max-height: 400px; object-fit: contain;">
-                        {% else %}
-                        <div class="text-muted">No Image Available</div>
-                        {% endif %}
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card-body p-4 d-flex flex-column h-100">
-                            <h1 class="card-title fw-bold mb-2">{{ product.name }}</h1>
-                            <p class="card-text text-muted mb-4 small">Added on {{ product.created_at|date:"F d, Y" }}</p>
-                            
-                            <h3 class="text-primary fw-bold mb-4">${{ product.price }}</h3>
-                            
-                            <div class="mb-4">
-                                <h5 class="fw-bold fs-6">Description</h5>
-                                <p class="card-text">{{ product.description|linebreaks }}</p>
-                            </div>
+      <div
+        class="card card-modern shadow-lg overflow-hidden"
+        style="background-color: #162c66"
+      >
+        <div class="row g-0">
+          <div
+            class="col-md-6 d-flex align-items-center justify-content-center bg-white p-3"
+            style="min-height: 400px"
+          >
+            <!-- Kept bg-white for image contrast, or could use dark if images are transparent pngs -->
+            {% if product.image %}
+            <img
+              src="{{ product.image.url }}"
+              class="img-fluid rounded"
+              alt="{{ product.name }}"
+              style="max-height: 400px; object-fit: contain"
+            />
+            {% else %}
+            <div class="text-muted">Sin imagen disponible</div>
+            {% endif %}
+          </div>
+          <div class="col-md-6">
+            <div class="card-body p-4 d-flex flex-column h-100">
+              <h1 class="card-title fw-bold mb-2 display-6">
+                {{ product.name }}
+              </h1>
+              <p class="card-text text-white-50 mb-4 small">
+                Agregado el {{ product.created_at|date:"d F Y" }}
+              </p>
 
-                            <div class="mt-auto">
-                                <div class="d-flex align-items-center justify-content-between mb-3">
-                                    <span class="fw-bold">Availability:</span>
-                                    {% if product.stock > 0 %}
-                                    <span class="badge bg-success">In Stock ({{ product.stock }})</span>
-                                    {% else %}
-                                    <span class="badge bg-danger">Out of Stock</span>
-                                    {% endif %}
-                                </div>
+              <h3 class="fw-bold mb-4" style="color: #4db8ff">
+                ${{ product.price }}
+              </h3>
 
-                                {% if user.is_authenticated %}
-                                <div class="d-grid">
-                                    <a href="{% url 'place_order' product.id %}" class="btn btn-primary btn-lg">Buy Now</a>
-                                </div>
-                                {% else %}
-                                <div class="d-grid">
-                                    <a href="{% url 'login' %}" class="btn btn-outline-primary">Login to Buy</a>
-                                </div>
-                                {% endif %}
+              <div class="mb-4 flex-grow-1">
+                <h5 class="fw-bold fs-6 border-bottom border-light pb-2 mb-3">
+                  Descripción
+                </h5>
+                <p class="card-text text-light">
+                  {{ product.description|linebreaks }}
+                </p>
+              </div>
 
-                                {% if user.is_superuser %}
-                                <div class="d-grid gap-2 d-md-flex mt-3 pt-3 border-top justify-content-md-end">
-                                    <a href="{% url 'product_update' product.pk %}" class="btn btn-sm btn-outline-secondary">Edit Product</a>
-                                    <a href="{% url 'product_delete' product.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
-                                </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
+              <div class="mt-auto">
+                <div
+                  class="d-flex align-items-center justify-content-between mb-3"
+                >
+                  <span class="fw-bold">Disponibilidad:</span>
+                  {% if product.stock > 0 %}
+                  <span class="badge bg-success rounded-pill px-3"
+                    >Disponible ({{ product.stock }})</span
+                  >
+                  {% else %}
+                  <span class="badge bg-danger rounded-pill px-3">Agotado</span>
+                  {% endif %}
                 </div>
+
+                {% if user.is_authenticated %}
+                <div class="d-grid">
+                  <a
+                    href="#"
+                    class="btn btn-primary-custom btn-lg shadow-sm"
+                    onclick="alert('Funcionalidad de compra en desarrollo')"
+                    >Comprar Ahora</a
+                  >
+                </div>
+                {% else %}
+                <div class="d-grid">
+                  <a
+                    href="{% url 'login' %}"
+                    class="btn btn-outline-light-custom"
+                    >Iniciar sesión para comprar</a
+                  >
+                </div>
+                {% endif %} {% if user.is_superuser %}
+                <div
+                  class="d-grid gap-2 d-md-flex mt-3 pt-3 border-top border-secondary justify-content-md-end"
+                >
+                  <a
+                    href="{% url 'product_update' product.pk %}"
+                    class="btn btn-sm btn-outline-warning"
+                    >Editar Producto</a
+                  >
+                  <a
+                    href="{% url 'product_delete' product.pk %}"
+                    class="btn btn-sm btn-outline-danger"
+                    >Eliminar</a
+                  >
+                </div>
+                {% endif %}
+              </div>
             </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 {% endblock %}

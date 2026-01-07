@@ -5,6 +5,8 @@ from django.urls import reverse_lazy
 from .models import Product
 
 
+from .forms import ProductForm
+
 class ProductListView(ListView):
     model = Product
     template_name = 'home.html'
@@ -14,14 +16,14 @@ class ProductListView(ListView):
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
-    fields = ['name', 'description', 'price', 'stock', 'image']
+    form_class = ProductForm
     template_name = 'forms.html'
     success_url = reverse_lazy('product_list')
 
 
 class ProductUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
-    fields = ['name', 'description', 'price', 'stock', 'image']
+    form_class = ProductForm
     template_name = 'forms.html'
     success_url = reverse_lazy('product_list')
 
