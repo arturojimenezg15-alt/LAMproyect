@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'dashboard',
     'inventory',
     'panel_usuario',
+    'pedidos',
 ]
 
 MIDDLEWARE = [

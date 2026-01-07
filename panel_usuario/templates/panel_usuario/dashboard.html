@@ -1,136 +1,238 @@
-{% extends 'base.html' %}
-{% load static %}
-
-{% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-lg border-0 rounded-lg">
-                <div class="card-body p-5">
-                    
-                    <!-- Profile Header -->
-                    <div class="text-center mb-4">
-                        <div class="position-relative d-inline-block">
-                            {% if user.profile.profile_picture %}
-                                <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture" class="rounded-circle img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;">
-                            {% else %}
-                                <img src="https://via.placeholder.com/150" alt="Default Profile" class="rounded-circle img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;">
-                            {% endif %}
-                        </div>
-                        <h2 class="mt-3 font-weight-bold">{{ user.username }}</h2>
-                        <p class="text-muted">{{ user.email }}</p>
-                    </div>
-
-                    <hr>
-
-                    <!-- Personal Data Form -->
-                    <h4 class="mb-3">Personal Information</h4>
-                    <form method="POST" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="id_first_name">First Name</label>
-                                {{ u_form.first_name }}
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="id_last_name">Last Name</label>
-                                {{ u_form.last_name }}
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="id_email">Email Address</label>
-                            {{ u_form.email }}
-                        </div>
-
-                        <div class="form-group">
-                            <label for="id_phone_number">Phone Number</label>
-                            {{ p_form.phone_number }}
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="id_profile_picture">Profile Picture</label>
-                            {{ p_form.profile_picture }}
-                        </div>
-
-                        <!-- Password Display (Mockup for UX request) -->
-                        <div class="form-group">
-                             <label>Password</label>
-                             <div class="input-group">
-                                 <input type="password" class="form-control" value="********" id="mockPassword" readonly>
-                                 <div class="input-group-append">
-                                     <button class="btn btn-outline-secondary" type="button" onclick="togglePassword()">
-                                         <i class="fa fa-eye" id="toggleIcon">Show</i>
-                                     </button>
-                                 </div>
-                             </div>
-                             <small class="form-text text-muted"><a href="#">Change Password</a> (Security Note: Actual password cannot be displayed)</small>
-                        </div>
-
-                        <div class="text-center mt-4">
-                            <button type="submit" class="btn btn-primary btn-lg px-5">Save Changes</button>
-                        </div>
-                    </form>
-
-                    <hr class="my-5">
-
-                    <!-- Purchase History -->
-                    <h4 class="mb-3">Purchase History</h4>
-                    {% if orders %}
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead class="thead-light">
-                                    <tr>
-                                        <th>Order ID</th>
-                                        <th>Date</th>
-                                        <th>Product</th>
-                                        <th>Total</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for order in orders %}
-                                    <tr>
-                                        <td>#{{ order.id }}</td>
-                                        <td>{{ order.created_at|date:"M d, Y" }}</td>
-                                        <td>{{ order.product.name }}</td>
-                                        <td>${{ order.product.price }}</td>
-                                        <td><span class="badge badge-success">Completed</span></td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    {% else %}
-                        <p class="text-muted text-center">No purchases found.</p>
-                    {% endif %}
-
-                    <hr class="my-5">
-
-                    <!-- Sell Option -->
-                    <div class="text-center">
-                        <h4 class="mb-3">Want to sell your own clothes?</h4>
-                        <a href="{% url 'product_create' %}" class="btn btn-success btn-lg px-5">Start Selling</a>
-                    </div>
-
-                </div>
+{% extends 'base.html' %} {% load static %} {% block content %}
+<div class="container mt-5 mb-5">
+  <div class="row justify-content-center">
+    <div class="col-md-9">
+      <div
+        class="card shadow-lg border-0 rounded-4 overflow-hidden"
+        style="background-color: white"
+      >
+        <div class="card-body p-4 p-md-5">
+          <!-- Profile Header -->
+          <div class="text-center mb-5">
+            <div
+              class="profile-image-container position-relative d-inline-block"
+            >
+              {% if user.profile.profile_picture %}
+              <img
+                src="{{ user.profile.profile_picture.url }}"
+                alt="Foto de Perfil"
+                class="rounded-circle shadow-sm border border-4 border-white"
+                style="width: 160px; height: 160px; object-fit: cover"
+              />
+              {% else %}
+              <img
+                src="https://via.placeholder.com/160"
+                alt="Perfil Predeterminado"
+                class="rounded-circle shadow-sm border border-4 border-white"
+                style="width: 160px; height: 160px; object-fit: cover"
+              />
+              {% endif %}
+              <label
+                for="id_profile_picture"
+                class="btn btn-sm btn-dark position-absolute bottom-0 end-0 rounded-circle p-2 shadow-sm"
+                style="background-color: var(--secondary-color-2); border: none"
+              >
+                <i class="bi bi-camera-fill text-white"></i>
+              </label>
             </div>
+            <h2
+              class="mt-4 fw-bold"
+              style="
+                font-family: 'Playfair Display', serif;
+                color: var(--secondary-color-2);
+              "
+            >
+              {{ user.username }}<span class="brand-dot">.</span>
+            </h2>
+            <p class="text-muted small">{{ user.email }}</p>
+          </div>
+
+          <!-- Personal Data Form -->
+          <h4
+            class="mb-4 fw-bold"
+            style="
+              font-family: 'Playfair Display', serif;
+              color: var(--secondary-color-2);
+            "
+          >
+            Información Personal
+          </h4>
+          <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Nombre</label>
+                {{ u_form.first_name }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Apellido</label>
+                {{ u_form.last_name }}
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Correo Electrónico</label>
+              {{ u_form.email }}
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Número de Teléfono</label>
+              {{ p_form.phone_number }}
+            </div>
+
+            <div class="mb-4 d-none">
+              <!-- Seccion oculta porque usamos el label de arriba para activar el input -->
+              {{ p_form.profile_picture }}
+            </div>
+
+            <!-- Password Display (Mockup for UX request) -->
+            <div class="mb-4">
+              <label class="form-label fw-semibold">Contraseña</label>
+              <div class="input-group mb-2">
+                <input
+                  type="password"
+                  class="form-control"
+                  value="********"
+                  id="mockPassword"
+                  readonly
+                />
+                <button
+                  class="btn btn-outline-secondary px-3"
+                  style="border-color: #d1c4b9"
+                  type="button"
+                  onclick="togglePassword()"
+                >
+                  <i class="bi bi-eye" id="toggleIcon"></i>
+                </button>
+              </div>
+              <small class="text-muted"
+                ><a
+                  href="#"
+                  class="text-decoration-none"
+                  style="color: var(--accent-orange)"
+                  >Cambiar Contraseña</a
+                ></small
+              >
+            </div>
+
+            <div class="text-center mt-5">
+              <button
+                type="submit"
+                class="btn btn-primary-custom btn-lg px-5 shadow"
+              >
+                Guardar Cambios
+              </button>
+            </div>
+          </form>
+
+          <hr class="my-5" />
+
+          <!-- Historial de Compras -->
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4
+              class="fw-bold mb-0"
+              style="
+                font-family: 'Playfair Display', serif;
+                color: var(--secondary-color-2);
+              "
+            >
+              Historial de Compras
+            </h4>
+            <span class="badge badge-luxury">{{ orders|length }} pedidos</span>
+          </div>
+
+          {% if orders %}
+          <div class="table-responsive">
+            <table class="table table-premium">
+              <thead>
+                <tr>
+                  <th>ID Pedido</th>
+                  <th>Fecha</th>
+                  <th>Producto</th>
+                  <th>Total</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for order in orders %}
+                <tr>
+                  <td class="fw-bold">#{{ order.id }}</td>
+                  <td class="text-muted">
+                    {{ order.fecha_creacion|date:"d M, Y" }}
+                  </td>
+                  <td class="fw-semibold">
+                    {% if order.producto %} {{ order.producto.name }} {% else %}
+                    <span class="text-muted">Producto eliminado</span>
+                    {% endif %}
+                  </td>
+                  <td class="fw-bold" style="color: var(--accent-orange)">
+                    ${{ order.total }}
+                  </td>
+                  <td>
+                    <span
+                      class="badge badge-luxury {% if order.estado == 'pendiente' %}text-warning{% elif order.estado == 'pagado' %}text-info{% elif order.estado == 'enviado' %}text-primary{% elif order.estado == 'entregado' %}text-success{% else %}text-danger{% endif %}"
+                    >
+                      {{ order.get_estado_display }}
+                    </span>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="text-center py-4">
+            <p class="text-muted">Aún no has realizado ninguna compra.</p>
+          </div>
+          {% endif %}
+
+          <hr class="my-5" />
+
+          <!-- Sell Option -->
+          <div
+            class="text-center bg-light p-5 rounded-4 border border-1"
+            style="
+              border-style: dashed !important;
+              border-color: #d1c4b9 !important;
+            "
+          >
+            <h4
+              class="mb-3 fw-bold"
+              style="
+                font-family: 'Playfair Display', serif;
+                color: var(--secondary-color-2);
+              "
+            >
+              ¿Quieres vender tus piezas?
+            </h4>
+            <p class="text-muted mb-4">
+              Únete a nuestra exclusiva red de vendedores y dale una nueva vida
+              a tu armario.
+            </p>
+            <a
+              href="{% url 'product_create' %}"
+              class="btn btn-primary-custom btn-lg px-5 shadow"
+              >Empezar a Vender</a
+            >
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <script>
-    function togglePassword() {
-        var x = document.getElementById("mockPassword");
-        var icon = document.getElementById("toggleIcon");
-        if (x.type === "password") {
-            x.type = "text";
-            icon.innerText = "Hide";
-        } else {
-            x.type = "password";
-            icon.innerText = "Show";
-        }
+  function togglePassword() {
+    var x = document.getElementById("mockPassword");
+    var icon = document.getElementById("toggleIcon");
+    if (x.type === "password") {
+      x.type = "text";
+      icon.classList.replace("bi-eye", "bi-eye-slash");
+    } else {
+      x.type = "password";
+      icon.classList.replace("bi-eye-slash", "bi-eye");
     }
+  }
 </script>
 {% endblock %}

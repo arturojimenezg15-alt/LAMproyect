@@ -1,35 +1,52 @@
 {% extends 'base.html' %} {% block content %}
 <div class="dashboard-container">
-  <h1 class="page-title">Admin Dashboard</h1>
+  <h1
+    class="page-title"
+    style="
+      font-family: 'Playfair Display', serif;
+      color: #6c1305;
+      margin-left: 2rem;
+    "
+  >
+    Dashboard
+  </h1>
 
   <!-- Key Metrics Cards -->
   <div class="dashboard-cards">
     <div class="card">
       <div class="card-icon">📦</div>
       <div class="card-info">
-        <h3>Total Products</h3>
-        <p class="card-value">{{ total_products }}</p>
+        <h3 style="color: #6c1305">Total Products</h3>
+        <p style="color: #6c1305; text-align: center" class="card-value">
+          {{ total_products }}
+        </p>
       </div>
     </div>
     <div class="card">
       <div class="card-icon">🛒</div>
       <div class="card-info">
-        <h3>Total Orders</h3>
-        <p class="card-value">{{ total_orders }}</p>
+        <h3 style="color: #6c1305">Total Orders</h3>
+        <p style="color: #6c1305; text-align: center" class="card-value">
+          {{ total_orders }}
+        </p>
       </div>
     </div>
     <div class="card">
       <div class="card-icon">👥</div>
       <div class="card-info">
-        <h3>Unique Customers</h3>
-        <p class="card-value">{{ unique_customers }}</p>
+        <h3 style="color: #6c1305">Unique Customers</h3>
+        <p style="color: #6c1305; text-align: center" class="card-value">
+          {{ unique_customers }}
+        </p>
       </div>
     </div>
     <div class="card">
       <div class="card-icon">💰</div>
       <div class="card-info">
-        <h3>Total Revenue</h3>
-        <p class="card-value">${{ total_revenue }}</p>
+        <h3 style="color: #6c1305">Total Revenue</h3>
+        <p style="color: #6c1305; text-align: center" class="card-value">
+          ${{ total_revenue }}
+        </p>
       </div>
     </div>
   </div>
@@ -37,13 +54,13 @@
   <div class="dashboard-grid">
     <!-- Sales Chart -->
     <div class="chart-container section-container">
-      <h2>Monthly Revenue</h2>
+      <h2 style="color: #6c1305">Ventas Mensuales</h2>
       <canvas id="salesChart"></canvas>
     </div>
 
     <!-- Recent Orders -->
     <div class="recent-orders section-container">
-      <h2>Recent Orders</h2>
+      <h2 style="color: #6c1305">Pedidos Recientes</h2>
       {% if recent_orders %}
       <table class="dashboard-table">
         <thead>
@@ -59,10 +76,10 @@
           {% for order in recent_orders %}
           <tr>
             <td>#{{ order.id }}</td>
-            <td>{{ order.user.username }}</td>
-            <td>{{ order.product.name }}</td>
-            <td>{{ order.created_at|date:"M d, Y" }}</td>
-            <td>${{ order.product.price }}</td>
+            <td>{{ order.comprador.username }}</td>
+            <td>{{ order.producto.name }}</td>
+            <td>{{ order.fecha_creacion|date:"M d, Y" }}</td>
+            <td>${{ order.total }}</td>
           </tr>
           {% endfor %}
         </tbody>
@@ -80,9 +97,9 @@
     padding: 2rem 0;
   }
   .page-title {
-    font-size: 2rem;
+    font-size: 2.5rem;
     margin-bottom: 2rem;
-    color: #333;
+    color: var(--secondary-color-2);
   }
   .dashboard-cards {
     display: grid;
@@ -93,12 +110,13 @@
   .card {
     background: white;
     padding: 1.5rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     display: flex;
     align-items: center;
     gap: 1rem;
-    transition: transform 0.2s;
+    transition: transform 0.22s;
+    border: none;
   }
   .card:hover {
     transform: translateY(-5px);
@@ -108,13 +126,14 @@
   }
   .card-info h3 {
     font-size: 0.9rem;
-    color: #666;
+    color: var(--secondary-color-2);
     margin-bottom: 0.25rem;
+    font-weight: 600;
   }
   .card-value {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #333;
+    color: var(--secondary-color-2);
   }
   .dashboard-grid {
     display: grid;
@@ -129,15 +148,16 @@
   .section-container {
     background: white;
     padding: 1.5rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   }
   .section-container h2 {
     margin-bottom: 1.5rem;
     font-size: 1.25rem;
-    color: #444;
+    color: var(--secondary-color-2);
     border-bottom: 1px solid #eee;
     padding-bottom: 0.5rem;
+    font-family: "Playfair Display", serif;
   }
   .dashboard-table {
     width: 100%;
@@ -151,7 +171,7 @@
   }
   .dashboard-table th {
     font-weight: 600;
-    color: #555;
+    color: var(--secondary-color-2);
   }
 </style>
 
@@ -170,8 +190,8 @@
         {
           label: "Revenue ($)",
           data: chartData,
-          borderColor: "#3498db",
-          backgroundColor: "rgba(52, 152, 219, 0.1)",
+          borderColor: "#57342D",
+          backgroundColor: "rgba(87, 52, 45, 0.1)",
           borderWidth: 2,
           fill: true,
           tension: 0.4,

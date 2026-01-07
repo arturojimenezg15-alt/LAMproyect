@@ -1,0 +1,198 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container py-5">
+  <div class="row">
+    <div class="col-12 mb-5">
+      <h2
+        class="display-5 fw-bold mb-4"
+        style="
+          font-family: 'Playfair Display', serif;
+          color: var(--secondary-color-2);
+        "
+      >
+        Gestión de Pedidos<span class="brand-dot">.</span>
+      </h2>
+
+      <!-- Tabs -->
+      <ul
+        class="nav nav-tabs border-0 gap-2 mb-4"
+        id="orderTabs"
+        role="tablist"
+      >
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active rounded-pill px-4 fw-semibold shadow-sm border-0"
+            id="compras-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#compras"
+            type="button"
+            role="tab"
+            style="
+              background-color: var(--secondary-color-1);
+              color: var(--secondary-color-2);
+            "
+          >
+            <i class="bi bi-bag-check me-2"></i>Mis Compras
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link rounded-pill px-4 fw-semibold shadow-sm border-0"
+            id="ventas-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#ventas"
+            type="button"
+            role="tab"
+            style="
+              background-color: var(--secondary-color-1);
+              color: var(--secondary-color-2);
+            "
+          >
+            <i class="bi bi-tag me-2"></i>Mis Ventas
+          </button>
+        </li>
+      </ul>
+
+      <div class="tab-content pt-2" id="orderTabsContent">
+        <!-- Compras Tab -->
+        <div class="tab-pane fade show active" id="compras" role="tabpanel">
+          {% if compras %}
+          <div class="table-responsive bg-white rounded-4 shadow-sm p-3">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="text-muted small text-uppercase">
+                <tr>
+                  <th class="border-0">ID</th>
+                  <th class="border-0">Pieza</th>
+                  <th class="border-0">Fecha</th>
+                  <th class="border-0">Total</th>
+                  <th class="border-0">Estado</th>
+                  <th class="border-0 text-end">Acción</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for pedido in compras %}
+                <tr>
+                  <td class="fw-bold">#{{ pedido.id }}</td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      {% if pedido.producto.image %}
+                      <img
+                        src="{{ pedido.producto.image.url }}"
+                        class="rounded me-3"
+                        style="width: 45px; height: 45px; object-fit: cover"
+                      />
+                      {% endif %}
+                      <span class="fw-semibold"
+                        >{{ pedido.producto.name|default:"Producto eliminado"
+                        }}</span
+                      >
+                    </div>
+                  </td>
+                  <td class="text-muted small">
+                    {{ pedido.fecha_creacion|date:"d/m/Y" }}
+                  </td>
+                  <td class="fw-bold" style="color: var(--accent-orange)">
+                    ${{ pedido.total }}
+                  </td>
+                  <td>
+                    <span
+                      class="badge rounded-pill px-3 {% if pedido.estado == 'pagado' %}bg-info {% elif pedido.estado == 'enviado' %}bg-primary {% elif pedido.estado == 'entregado' %}bg-success {% else %}bg-secondary{% endif %}"
+                    >
+                      {{ pedido.get_estado_display }}
+                    </span>
+                  </td>
+                  <td class="text-end">
+                    <a
+                      href="{% url 'detalle_pedido' pedido.id %}"
+                      class="btn btn-sm btn-outline-dark rounded-pill px-3"
+                      >Ver Detalle</a
+                    >
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="text-center py-5 bg-white rounded-4 shadow-sm">
+            <i class="bi bi-cart-x display-1 text-muted opacity-25"></i>
+            <p class="mt-4 text-muted">Aún no has realizado ninguna compra.</p>
+            <a
+              href="{% url 'product_list' %}"
+              class="btn btn-primary-custom px-4 mt-2"
+              >Ir a de compras</a
+            >
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Ventas Tab -->
+        <div class="tab-pane fade" id="ventas" role="tabpanel">
+          {% if ventas %}
+          <div class="table-responsive bg-white rounded-4 shadow-sm p-3">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="text-muted small text-uppercase">
+                <tr>
+                  <th class="border-0">ID</th>
+                  <th class="border-0">Cliente</th>
+                  <th class="border-0">Pieza</th>
+                  <th class="border-0">Total</th>
+                  <th class="border-0">Estado</th>
+                  <th class="border-0 text-end">Acción</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for pedido in ventas %}
+                <tr>
+                  <td class="fw-bold">#{{ pedido.id }}</td>
+                  <td class="fw-semibold">{{ pedido.comprador.username }}</td>
+                  <td>
+                    {{ pedido.producto.name|default:"Producto eliminado" }}
+                  </td>
+                  <td class="fw-bold" style="color: var(--accent-orange)">
+                    ${{ pedido.total }}
+                  </td>
+                  <td>
+                    <span class="badge rounded-pill px-3 bg-secondary">
+                      {{ pedido.get_estado_display }}
+                    </span>
+                  </td>
+                  <td class="text-end">
+                    <a
+                      href="{% url 'detalle_pedido' pedido.id %}"
+                      class="btn btn-sm btn-outline-dark rounded-pill px-3"
+                      >Gestionar</a
+                    >
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="text-center py-5 bg-white rounded-4 shadow-sm">
+            <i class="bi bi-shop display-1 text-muted opacity-25"></i>
+            <p class="mt-4 text-muted">Aún no has recibido ninguna venta.</p>
+            <a
+              href="{% url 'product_create' %}"
+              class="btn btn-primary-custom px-4 mt-2"
+              >Publicar una Pieza</a
+            >
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .nav-tabs .nav-link.active {
+    background-color: var(--secondary-color-2) !important;
+    color: white !important;
+  }
+  .badge {
+    font-weight: 500;
+    font-size: 0.75rem;
+  }
+</style>
+{% endblock %}

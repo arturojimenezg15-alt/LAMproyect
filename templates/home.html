@@ -1,77 +1,260 @@
-{% extends 'base.html' %}
-
-{% block content %}
-<section class="p-5 mb-4 bg-light rounded-3 text-center">
-    <div class="container-fluid py-5">
-        <h1 class="display-5 fw-bold">LAManagement</h1>
-        <p class="col-md-8 fs-4 mx-auto">la mejor forma de gestionar tus productos.</p>
-    </div>
+{% extends 'base.html' %} {% load static %} {% block content %}
+<!-- Hero Section -->
+<section
+  class="text-center mb-5 p-5 rounded-4"
+  style="background-color: #57342d"
+>
+  <div class="container-fluid py-3">
+    <h1
+      style="font-family: 'Playfair Display', serif; color: white"
+      class="display-4 fw-bold mb-3"
+    >
+      <span class="brand-dot">LAM</span>anagement<span class="brand-dot"
+        >.</span
+      >
+    </h1>
+    <p class="lead mb-4" style="color: rgba(255, 255, 255, 0.9)">
+      La mejor forma de gestionar tus productos con estilo.
+    </p>
+    {% if not user.is_authenticated %}
+    <a
+      style="font-family: 'Playfair Display', serif; color: white"
+      href="{% url 'signup' %}"
+      class="btn btn-lg btn-outline-light-custom px-5"
+      >Empezar Ahora</a
+    >
+    {% endif %}
+  </div>
 </section>
 
-<div class="row row-cols-1 row-cols-md-3 g-4">
-    {% for product in products %}
-    <div class="col">
-        <div class="card h-100 shadow-sm">
-            {% if product.image %}
-            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 250px; object-fit: cover;">
-            {% else %}
-            <div class="d-flex align-items-center justify-content-center bg-secondary text-white" style="height: 250px;">
-                <span>No Image</span>
-            </div>
-            {% endif %}
-            <div class="card-body d-flex flex-column">
-                <h5 class="card-title">{{ product.name }}</h5>
-                <p class="card-text text-muted mb-4">{{ product.description|truncatewords:10 }}</p>
-                <h6 class="card-subtitle mb-3 text-primary fw-bold">${{ product.price }}</h6>
-                
-                <div class="mt-auto">
-                    <div class="d-grid gap-2 mb-2">
-                        <a href="{% url 'product_detail' product.pk %}" class="btn btn-outline-dark">View Details</a>
-                    </div>
-
-                    {% if user.is_superuser %}
-                    <div class="d-grid gap-2 d-md-block">
-                        <a href="{% url 'product_update' product.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
-                        <form action="{% url 'product_delete' product.pk %}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?');">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                        </form>
-                    </div>
-                    {% elif user.is_authenticated %}
-                    <div class="d-grid">
-                        <a href="{% url 'place_order' product.id %}" class="btn btn-primary">Buy Now</a>
-                    </div>
-                    {% else %}
-                    <div class="d-grid">
-                        <a href="{% url 'login' %}" class="btn btn-outline-primary">Login to Buy</a>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
+<!-- Promotional Carousel -->
+<div
+  id="heroCarousel"
+  class="carousel slide mb-5 shadow-sm rounded-4 overflow-hidden"
+>
+  <div class="carousel-indicators">
+    <button
+      type="button"
+      data-bs-target="#heroCarousel"
+      data-bs-slide-to="0"
+      class="active"
+      aria-current="true"
+      aria-label="Slide 1"
+    ></button>
+    <button
+      type="button"
+      data-bs-target="#heroCarousel"
+      data-bs-slide-to="1"
+      aria-label="Slide 2"
+    ></button>
+    <button
+      type="button"
+      data-bs-target="#heroCarousel"
+      data-bs-slide-to="2"
+      aria-label="Slide 3"
+    ></button>
+  </div>
+  <div class="carousel-inner" style="max-height: 500px">
+    <div class="carousel-item active" data-bs-interval="5000">
+      <img
+        src="{% static 'img/carousel/item1.png' %}"
+        class="d-block w-100 object-fit-cover"
+        alt="Luxury Store"
+        style="height: 500px"
+      />
+      <div
+        class="carousel-caption d-none d-md-block"
+        style="
+          background: rgba(87, 52, 45, 0.6);
+          backdrop-filter: blur(5px);
+          border-radius: 15px;
+          padding: 2rem;
+        "
+      >
+        <h2 style="font-family: 'Playfair Display', serif">
+          Elegancia Atemporal<span class="brand-dot">.</span>
+        </h2>
+        <p>Descubre nuestra nueva colección en un ambiente diseñado para ti.</p>
+      </div>
     </div>
-    {% empty %}
-    <div class="col-12 text-center">
-        <p class="text-muted">No products available yet.</p>
+    <div class="carousel-item" data-bs-interval="5000">
+      <img
+        src="{% static 'img/carousel/item2.png' %}"
+        class="d-block w-100 object-fit-cover"
+        alt="Model Fashion"
+        style="height: 500px"
+      />
+      <div
+        class="carousel-caption d-none d-md-block"
+        style="
+          background: rgba(87, 52, 45, 0.6);
+          backdrop-filter: blur(5px);
+          border-radius: 15px;
+          padding: 2rem;
+        "
+      >
+        <h2 style="font-family: 'Playfair Display', serif">
+          Estilo con Propósito<span class="brand-dot">.</span>
+        </h2>
+        <p>Prendas que cuentan una historia de calidad y diseño.</p>
+      </div>
     </div>
-    {% endfor %}
+    <div class="carousel-item" data-bs-interval="5000">
+      <img
+        src="{% static 'img/carousel/item3.png' %}"
+        class="d-block w-100 object-fit-cover"
+        alt="Premium Accessories"
+        style="height: 500px"
+      />
+      <div
+        class="carousel-caption d-none d-md-block"
+        style="
+          background: rgba(87, 52, 45, 0.6);
+          backdrop-filter: blur(5px);
+          border-radius: 15px;
+          padding: 2rem;
+        "
+      >
+        <h2 style="font-family: 'Playfair Display', serif">
+          Detalles que Importan<span class="brand-dot">.</span>
+        </h2>
+        <p>Accesorios exclusivos para complementar tu esencia.</p>
+      </div>
+    </div>
+  </div>
+  <button
+    class="carousel-control-prev"
+    type="button"
+    data-bs-target="#heroCarousel"
+    data-bs-slide="prev"
+  >
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Anterior</span>
+  </button>
+  <button
+    class="carousel-control-next"
+    type="button"
+    data-bs-target="#heroCarousel"
+    data-bs-slide="next"
+  >
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Siguiente</span>
+  </button>
 </div>
 
-{% if user.is_superuser and user_orders %}
-<section class="admin-section">
-    <h2>All Orders</h2>
-    <ul>
-        {% for order in user_orders %}
-        <!-- Wait, view passed user_orders meaning orders FOR user, or all if admin? Implementation was user filter. Re-checking -->
-        <!-- View code: user_orders = Order.objects.filter(user=request.user) even for admin. 
-            Ideally admin sees ALL orders. I'll stick to view logic or just show personal. 
-            Prompt said Admin can "ver la lista de pedidos realizados". 
-            I should probably update view to show all if admin, but current is filter(user). 
-            I will interpret "ver la lista de pedidos" as seeing their own for now or fix view later. 
-            For MVP let's assume valid. -->
-        <li>Order {{ order.id }}: {{ order.product.name }} - {{ order.created_at|date:"Y-m-d" }}</li>
-        {% endfor %}
-    </ul>
+<!-- Product Grid Section -->
+<section class="container mb-5 rounded-4">
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% for product in products %}
+    <div class="col">
+      <div
+        class="card h-100 shadow-sm border-0 card-hover rounded-4 overflow-hidden"
+      >
+        <div
+          class="position-relative overflow-hidden rounded-4"
+          style="height: 250px"
+        >
+          {% if product.image %}
+          <img
+            src="{{ product.image.url }}"
+            class="card-img-top w-100 h-100 object-fit-cover transition-transform"
+            alt="{{ product.name }}"
+          />
+          {% else %}
+          <div
+            class="d-flex align-items-center justify-content-center bg-light h-100 text-muted"
+          >
+            <i class="bi bi-image fs-1"></i>
+          </div>
+          {% endif %}
+          <div
+            class="card-img-overlay d-flex align-items-end justify-content-end opacity-0 hover-opacity-100 transition-opacity p-3"
+          >
+            <a
+              href="{% url 'product_detail' product.pk %}"
+              class="btn btn-light rounded-circle shadow-sm p-2"
+              title="View Details"
+            >
+              <i class="bi bi-eye"></i>
+              <!-- Assuming Bootstrap Icons are available, otherwise text -->
+              Ver
+            </a>
+          </div>
+        </div>
+        <div class="card-body d-flex flex-column">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <h5 class="card-title fw-bold text-dark mb-0">
+              {{ product.name }}<span class="brand-dot">.</span>
+            </h5>
+            <span
+              class="fw-bold"
+              style="
+                font-family: 'Playfair Display', serif;
+                color: #e67e22;
+                font-size: 2rem;
+                margin-left: auto;
+              "
+              >${{ product.price }}</span
+            >
+          </div>
+          <p class="card-text text-muted small flex-grow-1">
+            {{ product.description|truncatewords:15 }}
+          </p>
+          <div class="d-grid mt-3">
+            <a
+              href="{% url 'product_detail' product.pk %}"
+              class="btn"
+              style="
+                background-color: #57342d;
+                color: #e67e22;
+                border-radius: 10px;
+                font-weight: 600;
+              "
+              >Comprar</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center py-5">
+      <h3 class="text-muted">No hay productos disponibles por el momento.</h3>
+    </div>
+    {% endfor %}
+  </div>
 </section>
-{% endif %}
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const carouselElement = document.getElementById("heroCarousel");
+    if (carouselElement) {
+      // Inicialización explícita para asegurar el control total vía JS
+      const carousel = new bootstrap.Carousel(carouselElement, {
+        interval: 5000,
+        ride: "carousel",
+        pause: "hover",
+      });
+
+      carouselElement.addEventListener(
+        "wheel",
+        function (event) {
+          // Solo actuar si el carrusel está en el viewport
+          const rect = carouselElement.getBoundingClientRect();
+          if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
+            // No prevenimos el scroll por defecto a menos que estemos seguros de navegar
+            if (Math.abs(event.deltaY) > 50) {
+              event.preventDefault();
+              if (event.deltaY > 0) {
+                carousel.next();
+              } else {
+                carousel.prev();
+              }
+            }
+          }
+        },
+        { passive: false }
+      );
+    }
+  });
+</script>
 {% endblock %}

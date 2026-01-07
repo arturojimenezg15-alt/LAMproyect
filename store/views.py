@@ -2,8 +2,10 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView, D
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
-from .models import Product
+from .models import Product, ExchangeRate
 
+
+from .forms import ProductForm
 
 class ProductListView(ListView):
     model = Product
@@ -14,26 +16,47 @@ class ProductListView(ListView):
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
-    fields = ['name', 'description', 'price', 'stock', 'image']
+    form_class = ProductForm
     template_name = 'forms.html'
     success_url = reverse_lazy('product_list')
 
+    def form_valid(self, form):
+        form.instance.seller = self.request.user
+        return super().form_valid(form)
 
-class ProductUpdateView(LoginRequiredMixin, UpdateView):
+
+class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Product
-    fields = ['name', 'description', 'price', 'stock', 'image']
+    form_class = ProductForm
     template_name = 'forms.html'
     success_url = reverse_lazy('product_list')
 
+    def test_func(self):
+        product = self.get_object()
+        return self.request.user == product.seller
 
-class ProductDeleteView(LoginRequiredMixin, DeleteView):
+
+class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Product
     template_name = 'confirm_delete.html'
     success_url = reverse_lazy('product_list')
+
+    def test_func(self):
+        product = self.get_object()
+        return self.request.user == product.seller
 
 
 class ProductDetailView(DetailView):
     model = Product
     template_name = 'detail.html'
     context_object_name = 'product'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        try:
+            # Intentamos obtener la última tasa cargada manualmente
+            context['manual_rate'] = ExchangeRate.objects.latest().rate
+        except ExchangeRate.DoesNotExist:
+            context['manual_rate'] = None
+        return context
 
