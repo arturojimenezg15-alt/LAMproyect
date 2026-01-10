@@ -42,9 +42,9 @@ class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Product
     template_name = 'confirm_delete.html'
     success_url = reverse_lazy('product_list')
-
     def test_func(self):
-        return self.request.user.is_superuser
+        product = self.get_object()
+        return self.request.user == product.seller or self.request.user.is_superuser
 
 
 class ProductDetailView(DetailView):
