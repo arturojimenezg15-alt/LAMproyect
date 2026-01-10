@@ -1,76 +1,38 @@
 {% extends 'base.html' %} {% load static %} {% block content %}
 <!-- Hero Section -->
-<section
-  class="text-center mb-5 p-5 rounded-4"
-  style="background-color: #57342d"
->
+<section class="text-center mb-5 p-5 rounded-4" style="background-color: #57342d">
   <div class="container-fluid py-3">
-    <h1
-      style="font-family: 'Playfair Display', serif; color: white"
-      class="display-4 fw-bold mb-3"
-    >
-      <span class="brand-dot">LAM</span>anagement<span class="brand-dot"
-        >.</span
-      >
+    <h1 style="font-family: 'Playfair Display', serif; color: white" class="display-4 fw-bold mb-3">
+      <span class="brand-dot">LAM</span>anagement<span class="brand-dot">.</span>
     </h1>
     <p class="lead mb-4" style="color: rgba(255, 255, 255, 0.9)">
       La mejor forma de gestionar tus productos con estilo.
     </p>
     {% if not user.is_authenticated %}
-    <a
-      style="font-family: 'Playfair Display', serif; color: white"
-      href="{% url 'signup' %}"
-      class="btn btn-lg btn-outline-light-custom px-5"
-      >Empezar Ahora</a
-    >
+    <a style="font-family: 'Playfair Display', serif; color: white" href="{% url 'signup' %}"
+      class="btn btn-lg btn-outline-light-custom px-5">Empezar Ahora</a>
     {% endif %}
   </div>
 </section>
 
 <!-- Promotional Carousel -->
-<div
-  id="heroCarousel"
-  class="carousel slide mb-5 shadow-sm rounded-4 overflow-hidden"
->
+<div id="heroCarousel" class="carousel slide mb-5 shadow-sm rounded-4 overflow-hidden">
   <div class="carousel-indicators">
-    <button
-      type="button"
-      data-bs-target="#heroCarousel"
-      data-bs-slide-to="0"
-      class="active"
-      aria-current="true"
-      aria-label="Slide 1"
-    ></button>
-    <button
-      type="button"
-      data-bs-target="#heroCarousel"
-      data-bs-slide-to="1"
-      aria-label="Slide 2"
-    ></button>
-    <button
-      type="button"
-      data-bs-target="#heroCarousel"
-      data-bs-slide-to="2"
-      aria-label="Slide 3"
-    ></button>
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true"
+      aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
   </div>
   <div class="carousel-inner" style="max-height: 500px">
     <div class="carousel-item active" data-bs-interval="5000">
-      <img
-        src="{% static 'img/carousel/item1.png' %}"
-        class="d-block w-100 object-fit-cover"
-        alt="Luxury Store"
-        style="height: 500px"
-      />
-      <div
-        class="carousel-caption d-none d-md-block"
-        style="
+      <img src="{% static 'img/carousel/item1.png' %}" class="d-block w-100 object-fit-cover" alt="Luxury Store"
+        style="height: 500px" />
+      <div class="carousel-caption d-none d-md-block" style="
           background: rgba(87, 52, 45, 0.6);
           backdrop-filter: blur(5px);
           border-radius: 15px;
           padding: 2rem;
-        "
-      >
+        ">
         <h2 style="font-family: 'Playfair Display', serif">
           Elegancia Atemporal<span class="brand-dot">.</span>
         </h2>
@@ -78,21 +40,14 @@
       </div>
     </div>
     <div class="carousel-item" data-bs-interval="5000">
-      <img
-        src="{% static 'img/carousel/item2.png' %}"
-        class="d-block w-100 object-fit-cover"
-        alt="Model Fashion"
-        style="height: 500px"
-      />
-      <div
-        class="carousel-caption d-none d-md-block"
-        style="
+      <img src="{% static 'img/carousel/item2.png' %}" class="d-block w-100 object-fit-cover" alt="Model Fashion"
+        style="height: 500px" />
+      <div class="carousel-caption d-none d-md-block" style="
           background: rgba(87, 52, 45, 0.6);
           backdrop-filter: blur(5px);
           border-radius: 15px;
           padding: 2rem;
-        "
-      >
+        ">
         <h2 style="font-family: 'Playfair Display', serif">
           Estilo con Propósito<span class="brand-dot">.</span>
         </h2>
@@ -100,21 +55,14 @@
       </div>
     </div>
     <div class="carousel-item" data-bs-interval="5000">
-      <img
-        src="{% static 'img/carousel/item3.png' %}"
-        class="d-block w-100 object-fit-cover"
-        alt="Premium Accessories"
-        style="height: 500px"
-      />
-      <div
-        class="carousel-caption d-none d-md-block"
-        style="
+      <img src="{% static 'img/carousel/item3.png' %}" class="d-block w-100 object-fit-cover" alt="Premium Accessories"
+        style="height: 500px" />
+      <div class="carousel-caption d-none d-md-block" style="
           background: rgba(87, 52, 45, 0.6);
           backdrop-filter: blur(5px);
           border-radius: 15px;
           padding: 2rem;
-        "
-      >
+        ">
         <h2 style="font-family: 'Playfair Display', serif">
           Detalles que Importan<span class="brand-dot">.</span>
         </h2>
@@ -122,21 +70,11 @@
       </div>
     </div>
   </div>
-  <button
-    class="carousel-control-prev"
-    type="button"
-    data-bs-target="#heroCarousel"
-    data-bs-slide="prev"
-  >
+  <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
     <span class="visually-hidden">Anterior</span>
   </button>
-  <button
-    class="carousel-control-next"
-    type="button"
-    data-bs-target="#heroCarousel"
-    data-bs-slide="next"
-  >
+  <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
     <span class="carousel-control-next-icon" aria-hidden="true"></span>
     <span class="visually-hidden">Siguiente</span>
   </button>
@@ -147,34 +85,20 @@
   <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
     {% for product in products %}
     <div class="col">
-      <div
-        class="card h-100 shadow-sm border-0 card-hover rounded-4 overflow-hidden"
-      >
-        <div
-          class="position-relative overflow-hidden rounded-4"
-          style="height: 250px"
-        >
+      <div class="card h-100 shadow-sm border-0 card-hover rounded-4 overflow-hidden">
+        <div class="position-relative overflow-hidden rounded-4" style="height: 250px">
           {% if product.image %}
-          <img
-            src="{{ product.image.url }}"
-            class="card-img-top w-100 h-100 object-fit-cover transition-transform"
-            alt="{{ product.name }}"
-          />
+          <img src="{{ product.image.url }}" class="card-img-top w-100 h-100 object-fit-cover transition-transform"
+            alt="{{ product.name }}" />
           {% else %}
-          <div
-            class="d-flex align-items-center justify-content-center bg-light h-100 text-muted"
-          >
+          <div class="d-flex align-items-center justify-content-center bg-light h-100 text-muted">
             <i class="bi bi-image fs-1"></i>
           </div>
           {% endif %}
           <div
-            class="card-img-overlay d-flex align-items-end justify-content-end opacity-0 hover-opacity-100 transition-opacity p-3"
-          >
-            <a
-              href="{% url 'product_detail' product.pk %}"
-              class="btn btn-light rounded-circle shadow-sm p-2"
-              title="View Details"
-            >
+            class="card-img-overlay d-flex align-items-end justify-content-end opacity-0 hover-opacity-100 transition-opacity p-3">
+            <a href="{% url 'product_detail' product.pk %}" class="btn btn-light rounded-circle shadow-sm p-2"
+              title="View Details">
               <i class="bi bi-eye"></i>
               <!-- Assuming Bootstrap Icons are available, otherwise text -->
               Ver
@@ -186,32 +110,26 @@
             <h5 class="card-title fw-bold text-dark mb-0">
               {{ product.name }}<span class="brand-dot">.</span>
             </h5>
-            <span
-              class="fw-bold"
-              style="
+            <span class="fw-bold" style="
                 font-family: 'Playfair Display', serif;
                 color: #e67e22;
                 font-size: 2rem;
                 margin-left: auto;
-              "
-              >${{ product.price }}</span
-            >
+              ">${{ product.price }}</span>
           </div>
           <p class="card-text text-muted small flex-grow-1">
             {{ product.description|truncatewords:15 }}
           </p>
           <div class="d-grid mt-3">
-            <a
-              href="{% url 'product_detail' product.pk %}"
-              class="btn"
-              style="
+            <button class="btn add-to-cart" data-product-id="{{ product.pk }}"
+              data-url="{% url 'carrito:cart_add' product.pk %}"
+              data-image="{% if product.image %}{{ product.image.url }}{% endif %}" style="
                 background-color: #57342d;
                 color: #e67e22;
                 border-radius: 10px;
                 font-weight: 600;
-              "
-              >Comprar</a
-            >
+                width: 100%;
+              ">Añadir al Carrito</button>
           </div>
         </div>
       </div>
