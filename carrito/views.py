@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from decimal import Decimal
 from django.views.decorators.http import require_POST
 from store.models import Product
 from .cart import Cart
@@ -25,6 +26,37 @@ def cart_remove(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     cart.remove(product)
     return redirect('carrito:cart_detail')
+
+@require_POST
+def cart_update(request, product_id):
+    cart = Cart(request)
+    product = get_object_or_404(Product, id=product_id)
+    action = request.POST.get('action')
+    
+    current_quantity = cart.cart.get(str(product_id), {}).get('quantity', 0)
+    
+    if action == 'increase':
+        cart.add(product=product, quantity=current_quantity + 1, override_quantity=True)
+    elif action == 'decrease':
+        cart.add(product=product, quantity=current_quantity - 1, override_quantity=True)
+        
+    # Prepare response data
+    item = cart.cart.get(str(product_id))
+    if item:
+        item_total = Decimal(item['price']) * item['quantity']
+        quantity = item['quantity']
+    else:
+        # Item removed
+        item_total = 0
+        quantity = 0
+        
+    return JsonResponse({
+        'success': True,
+        'quantity': quantity,
+        'item_total': str(item_total),
+        'cart_total': str(cart.get_total_price()),
+        'cart_items_count': len(cart)
+    })
 
 def cart_detail(request):
     cart = Cart(request)

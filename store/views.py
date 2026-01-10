@@ -14,11 +14,14 @@ class ProductListView(ListView):
     ordering = ['-created_at']
     
 
-class ProductCreateView(LoginRequiredMixin, CreateView):
+class ProductCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Product
     form_class = ProductForm
     template_name = 'forms.html'
     success_url = reverse_lazy('product_list')
+
+    def test_func(self):
+        return self.request.user.is_superuser
 
     def form_valid(self, form):
         form.instance.seller = self.request.user
@@ -32,8 +35,7 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     success_url = reverse_lazy('product_list')
 
     def test_func(self):
-        product = self.get_object()
-        return self.request.user == product.seller
+        return self.request.user.is_superuser
 
 
 class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
