@@ -84,7 +84,7 @@
                 <div class="d-grid">
                   <a href="{% url 'login' %}" class="btn btn-outline-light-custom">Iniciar sesión para comprar</a>
                 </div>
-                {% endif %} {% if user == product.seller or user.is_superuser %}
+                {% endif %} {% if user.is_superuser %}
                 <div class="d-grid gap-2 d-md-flex mt-3 pt-3 border-top border-light justify-content-md-end">
                   <a href="{% url 'product_update' product.pk %}" class="btn text-white" style="
                       background-color: var(--secondary-color-2);

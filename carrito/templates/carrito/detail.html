@@ -67,10 +67,19 @@
                                         ${{ item.price }}
                                     </td>
                                     <td class="text-center">
-                                        <span class="badge rounded-pill text-dark border"
-                                            style="font-size: 0.9rem; background-color: #fcfbf9;">
-                                            {{ item.quantity }}
-                                        </span>
+                                        <div class="d-flex justify-content-center align-items-center">
+                                            <button
+                                                class="btn btn-sm btn-outline-secondary update-cart shadow-none border-0"
+                                                data-product-id="{{ product.id }}" data-action="decrease"
+                                                style="color: #57342d;"><i class="bi bi-dash-circle fs-5"></i></button>
+                                            <span class="mx-2 fw-medium" id="quantity-{{ product.id }}">{{ item.quantity}}
+                                                
+                                            </span>
+                                            <button
+                                                class="btn btn-sm btn-outline-secondary update-cart shadow-none border-0"
+                                                data-product-id="{{ product.id }}" data-action="increase"
+                                                style="color: #57342d;"><i class="bi bi-plus-circle fs-5"></i></button>
+                                        </div>
                                     </td>
                                     <td class="text-end pe-4 fw-bold" style="color: #57342d;">
                                         ${{ item.total_price }}
@@ -137,4 +146,69 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        const csrftoken = getCookie('csrftoken');
+
+        document.querySelectorAll('.update-cart').forEach(button => {
+            button.addEventListener('click', function (e) {
+                e.preventDefault();
+                const productId = this.dataset.productId;
+                const action = this.dataset.action;
+                const url = `/cart/update/${productId}/`;
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: `action=${action}`
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            if (data.quantity === 0) {
+                                const row = this.closest('tr');
+                                row.remove();
+                                if (data.cart_items_count === 0) {
+                                    location.reload();
+                                }
+                            } else {
+                                document.getElementById(`quantity-${productId}`).innerText = data.quantity;
+                                const row = this.closest('tr');
+                                const totalCell = row.querySelector('td:nth-child(4)');
+                                totalCell.innerText = '$' + data.item_total;
+                            }
+
+                            const footerTotal = document.querySelector('tfoot span.fw-bold');
+                            if (footerTotal) footerTotal.innerText = '$' + data.cart_total;
+
+                            const badge = document.getElementById('cart-badge');
+                            if (badge) badge.innerText = data.cart_items_count;
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+    });
+</script>
 {% endblock %}
