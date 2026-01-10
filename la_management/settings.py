@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'inventory',
     'panel_usuario',
     'pedidos',
+    'carrito',
 ]
 
 MIDDLEWARE = [
@@ -68,6 +69,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'carrito.context_processors.cart',
             ],
         },
     },
@@ -130,4 +132,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Redirects
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'product_list'
+LOGIN_REDIRECT_URL = 'product_list'
 LOGOUT_REDIRECT_URL = 'product_list'
+
+CART_SESSION_ID = 'cart'

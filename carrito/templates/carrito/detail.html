@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Header Section -->
+            <div class="d-flex justify-content-between align-items-center mb-5">
+                <h2 class="display-5 fw-bold mb-0" style="font-family: 'Playfair Display', serif; color: #57342d;">
+                    Tu Selección<span class="brand-dot">.</span>
+                </h2>
+                <a href="{% url 'product_list' %}" class="btn btn-outline-dark rounded-pill px-4"
+                    style="border-color: #57342d; color: #57342d;">
+                    <i class="bi bi-arrow-left me-2"></i>Seguir Explorando
+                </a>
+            </div>
+
+            {% if cart %}
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden mb-5">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead style="background-color: #57342d; color: white;">
+                                <tr>
+                                    <th class="py-3 ps-4"
+                                        style="font-family: 'Playfair Display', serif; letter-spacing: 1px;">PRODUCTO
+                                    </th>
+                                    <th class="py-3 text-center"
+                                        style="font-family: 'Playfair Display', serif; letter-spacing: 1px;">PRECIO</th>
+                                    <th class="py-3 text-center"
+                                        style="font-family: 'Playfair Display', serif; letter-spacing: 1px;">CANTIDAD
+                                    </th>
+                                    <th class="py-3 text-end pe-4"
+                                        style="font-family: 'Playfair Display', serif; letter-spacing: 1px;">TOTAL</th>
+                                    <th class="py-3 text-center"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in cart %}
+                                {% with product=item.product %}
+                                <tr>
+                                    <td class="ps-4 py-3">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                {% if product.image %}
+                                                <img src="{{ product.image.url }}" alt="{{ product.name }}"
+                                                    class="rounded-3 shadow-sm object-fit-cover"
+                                                    style="width: 80px; height: 80px;">
+                                                {% else %}
+                                                <div class="bg-light rounded-3 d-flex align-items-center justify-content-center"
+                                                    style="width: 80px; height: 80px;">
+                                                    <i class="bi bi-image text-muted"></i>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h5 class="mb-0 fw-bold"
+                                                    style="font-family: 'Playfair Display', serif; color: #57342d;">
+                                                    {{ product.name }}
+                                                </h5>
+                                                <small class="text-muted">{{ product.seller.username }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center fw-medium" style="color: #e67e22;">
+                                        ${{ item.price }}
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge rounded-pill text-dark border"
+                                            style="font-size: 0.9rem; background-color: #fcfbf9;">
+                                            {{ item.quantity }}
+                                        </span>
+                                    </td>
+                                    <td class="text-end pe-4 fw-bold" style="color: #57342d;">
+                                        ${{ item.total_price }}
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="{% url 'carrito:cart_remove' product.id %}"
+                                            class="btn btn-link text-danger p-0" data-bs-toggle="tooltip"
+                                            title="Eliminar del carrito">
+                                            <i class="bi bi-trash fs-5"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endwith %}
+                                {% endfor %}
+                            </tbody>
+                            <tfoot style="background-color: #fcfbf9;">
+                                <tr>
+                                    <td colspan="3" class="text-end py-4 pe-4">
+                                        <span class="fs-5 text-muted me-2">Subtotal:</span>
+                                    </td>
+                                    <td class="text-end py-4 pe-4">
+                                        <span class="fs-3 fw-bold"
+                                            style="font-family: 'Playfair Display', serif; color: #57342d;">
+                                            ${{ cart.get_total_price }}
+                                        </span>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="d-flex justify-content-end align-items-center gap-3">
+                <div class="text-muted small fst-italic me-3">
+                    * Los costos de envío se calculan al contacto
+                </div>
+                <a href="{% url 'carrito:checkout' %}" class="btn btn-lg shadow-sm px-5 py-3"
+                    style="background-color: #57342d; color: #e67e22; border-radius: 12px; font-weight: 700; letter-spacing: 0.05em;">
+                    PROCESAR COMPRA <i class="bi bi-credit-card-fill ms-2"></i>
+                </a>
+            </div>
+
+            {% else %}
+            <!-- Empty State -->
+            <div class="text-center py-5">
+                <div class="mb-4">
+                    <i class="bi bi-bag-x" style="font-size: 5rem; color: #e4cdb2;"></i>
+                </div>
+                <h3 class="mb-3" style="font-family: 'Playfair Display', serif; color: #57342d;">
+                    Tu carrito está vacío
+                </h3>
+                <p class="text-muted mb-4 lead">
+                    Parece que aún no has elegido tu próxima prenda favorita.
+                </p>
+                <a href="{% url 'product_list' %}" class="btn btn-lg px-5 py-3"
+                    style="background-color: #57342d; color: #fff; border-radius: 50px;">
+                    Ir al Catálogo
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
