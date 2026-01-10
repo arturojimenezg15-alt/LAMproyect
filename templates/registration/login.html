@@ -36,16 +36,16 @@
     <div class="auth-form-wrapper">
       <!-- Login Form -->
       <div class="auth-form-content" id="loginFormSection">
-        <div class="auth-header">
-          <h2>Bienvenido</h2>
-          <p class="text-muted small">Ingresa tus credenciales</p>
+        <div class="auth-header mb-4">
+          <h2 class="mb-2">Bienvenido</h2>
+          <p class="text-muted small">Ingresa tus credenciales para acceder</p>
         </div>
         <form method="post" action="{% url 'login' %}">
           {% csrf_token %} {% for field in form %}
-          <div class="mb-3">
+          <div class="mb-4">
             <label
-              class="form-label fw-semibold"
-              style="color: var(--secondary-color-2)"
+              class="form-label fw-semibold mb-2"
+              style="color: var(--secondary-color-2); font-size: 0.9rem"
               >{{ field.label }}</label
             >
             {{ field }} {% if field.errors %}
@@ -53,8 +53,8 @@
             {% endif %}
           </div>
           {% endfor %}
-          <div class="d-grid mt-4">
-            <button type="submit" class="btn btn-primary-custom btn-lg">
+          <div class="d-grid mt-5">
+            <button type="submit" class="btn btn-primary-custom btn-lg py-3">
               Iniciar Sesión
             </button>
           </div>

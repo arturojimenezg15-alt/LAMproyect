@@ -1,20 +1,28 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} {% load l10n %} {% block content %}
 <div class="container py-5">
   <div class="row justify-content-center">
     <div class="col-md-10 col-lg-8">
-      <nav aria-label="breadcrumb" class="mb-4">
+      <nav aria-label="breadcrumb" class="mb-5">
         <ol class="breadcrumb">
           <li class="breadcrumb-item">
             <a
               href="{% url 'product_list' %}"
               class="text-decoration-none"
-              style="color: var(--secondary-color-2); opacity: 0.7"
+              style="
+                color: var(--secondary-color-2);
+                opacity: 0.6;
+                font-weight: 500;
+              "
               >Inicio</a
             >
           </li>
           <li
             class="breadcrumb-item active"
-            style="color: var(--secondary-color-2); font-weight: 600"
+            style="
+              color: var(--secondary-color-2);
+              font-weight: 600;
+              opacity: 0.9;
+            "
             aria-current="page"
           >
             {{ product.name }}
@@ -46,15 +54,23 @@
           <div class="col-md-6">
             <div class="card-body p-4 d-flex flex-column h-100">
               <h1
-                class="card-title fw-bold mb-2 display-6"
+                class="card-title fw-bold mb-3 display-5"
                 style="
                   font-family: 'Playfair Display', serif;
                   color: var(--secondary-color-2);
+                  letter-spacing: -0.02em;
                 "
               >
                 {{ product.name }}<span class="brand-dot">.</span>
               </h1>
-              <p class="card-text text-muted mb-4 small">
+              <p
+                class="card-text text-muted mb-4 small"
+                style="
+                  letter-spacing: 0.05em;
+                  text-transform: uppercase;
+                  font-size: 0.75rem;
+                "
+              >
                 Agregado el {{ product.created_at|date:"d F Y" }}
               </p>
 
@@ -70,15 +86,21 @@
               </h3>
               <div
                 id="bcv-price"
-                class="text-muted mb-4"
-                style="font-family: 'Poppins', sans-serif; font-size: 1.1rem"
+                class="mb-4 px-3 py-2 rounded-3"
+                style="
+                  font-family: 'Poppins', sans-serif;
+                  font-size: 1rem;
+                  background-color: #fdfaf7;
+                  border-left: 4px solid #e67e22;
+                  display: inline-block;
+                "
               >
                 <span
-                  class="spinner-border spinner-border-sm"
+                  class="spinner-border spinner-border-sm text-warning"
                   role="status"
                   aria-hidden="true"
                 ></span>
-                <span class="ms-1">Calculando precio en Bs...</span>
+                <span class="ms-2 text-muted">Calculando precio en Bs...</span>
               </div>
 
               <div class="mb-4 flex-grow-1">
@@ -190,11 +212,13 @@
           Información de Pago<span class="brand-dot">.</span>
         </h3>
       </div>
-      <div class="modal-body p-4 pt-2">
-        <p class="text-center text-muted small mb-4">
-          Para concretar la compra de esta pieza, por favor utiliza uno de los
-          siguientes métodos y envía el comprobante al vendedor.
-        </p>
+      <div class="modal-body p-4 pt-3">
+        <div class="mb-4 text-center">
+          <p class="text-muted small mb-0 px-3">
+            Para concretar la compra de esta pieza, por favor utiliza uno de los
+            siguientes métodos y envía el comprobante al vendedor.
+          </p>
+        </div>
 
         <form
           action="{% url 'crear_pedido' product.id %}"
@@ -340,14 +364,18 @@
             />
           </div>
 
-          <div class="mt-4 text-center">
+          <div class="mt-5 text-center px-2">
             <button
               type="submit"
-              class="btn btn-primary-custom w-100 shadow-sm"
+              class="btn btn-primary-custom w-100 shadow py-3 fw-bold"
+              style="font-size: 1.1rem; border-radius: 15px"
               onclick="if(!document.getElementById('selectedMethod').value){ alert('Por favor selecciona un método de pago'); return false; }"
             >
               CONFIRMAR PEDIDO
             </button>
+            <p class="text-muted tiny mt-3 mb-0" style="font-size: 0.7rem">
+              Tu pedido será verificado por el vendedor en las próximas horas.
+            </p>
           </div>
         </form>
       </div>
@@ -355,20 +383,23 @@
   </div>
 </div>
 
-{% block extra_js %}
+{% endblock %} {% block extra_js %}
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    const rawPrice = "{{ product.price }}".replace(',', '.');
+    const rawPrice = "{{ product.price|unlocalize }}";
     const usdPrice = parseFloat(rawPrice);
     const priceContainer = document.getElementById("bcv-price");
 
     if (isNaN(usdPrice)) {
-      priceContainer.innerHTML = '<small class="text-muted">Error al leer precio USD</small>';
+      priceContainer.innerHTML =
+        '<small class="text-muted">Error al leer precio USD</small>';
       return;
     }
 
     // Priorizamos la tasa manual del admin si existe
-    const manualRate = {% if manual_rate %}{{ manual_rate }}{% else %}null{% endif %};
+    // Usamos comillas para evitar errores de sintaxis si el valor está vacío o tiene comas
+    const manualRateStr = "{{ manual_rate|unlocalize|default:'' }}";
+    const manualRate = manualRateStr ? parseFloat(manualRateStr) : null;
 
     if (manualRate) {
       const bsPrice = (usdPrice * manualRate).toLocaleString("es-VE", {
@@ -380,12 +411,12 @@
       // Si no hay tasa manual, usamos la API
       fetch("https://ve.dolarapi.com/v1/dolares/bcv")
         .then((response) => {
-            if (!response.ok) throw new Error('Network response was not ok');
-            return response.json();
+          if (!response.ok) throw new Error("Network response was not ok");
+          return response.json();
         })
         .then((data) => {
           const rate = data.promedio || data.oficial;
-          if (!rate) throw new Error('Rate not found in response');
+          if (!rate) throw new Error("Rate not found in response");
 
           const bsPrice = (usdPrice * rate).toLocaleString("es-VE", {
             minimumFractionDigits: 2,
@@ -401,4 +432,4 @@
     }
   });
 </script>
-{% endblock %} {% endblock %}
+{% endblock %}
