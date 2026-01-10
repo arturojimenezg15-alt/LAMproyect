@@ -25,28 +25,23 @@
             "
             aria-current="page"
           >
+            <a href="{% url 'product_list' %}" class="text-decoration-none"
+              style="color: var(--secondary-color-2); opacity: 0.7">Inicio</a>
+          </li>
+          <li class="breadcrumb-item active" style="color: var(--secondary-color-2); font-weight: 600"
+            aria-current="page">
             {{ product.name }}
           </li>
         </ol>
       </nav>
 
-      <div
-        class="card shadow-lg overflow-hidden border-0 rounded-4"
-        style="background-color: white"
-      >
+      <div class="card shadow-lg overflow-hidden border-0 rounded-4" style="background-color: white">
         <div class="row g-0">
-          <div
-            class="col-md-6 d-flex align-items-center justify-content-center bg-white p-3"
-            style="min-height: 400px"
-          >
+          <div class="col-md-6 d-flex align-items-center justify-content-center bg-white p-3" style="min-height: 400px">
             <!-- Kept bg-white for image contrast, or could use dark if images are transparent pngs -->
             {% if product.image %}
-            <img
-              src="{{ product.image.url }}"
-              class="img-fluid rounded"
-              alt="{{ product.name }}"
-              style="max-height: 400px; object-fit: contain"
-            />
+            <img src="{{ product.image.url }}" class="img-fluid rounded" alt="{{ product.name }}"
+              style="max-height: 400px; object-fit: contain" />
             {% else %}
             <div class="text-muted">Sin imagen disponible</div>
             {% endif %}
@@ -61,6 +56,10 @@
                   letter-spacing: -0.02em;
                 "
               >
+              <h1 class="card-title fw-bold mb-2 display-6" style="
+                  font-family: 'Playfair Display', serif;
+                  color: var(--secondary-color-2);
+                ">
                 {{ product.name }}<span class="brand-dot">.</span>
               </h1>
               <p
@@ -74,14 +73,11 @@
                 Agregado el {{ product.created_at|date:"d F Y" }}
               </p>
 
-              <h3
-                class="fw-bold mb-0"
-                style="
+              <h3 class="fw-bold mb-0" style="
                   font-family: 'Playfair Display', serif;
                   color: #e67e22;
                   font-size: 2.5rem;
-                "
-              >
+                ">
                 ${{ product.price }}
               </h3>
               <div
@@ -101,27 +97,23 @@
                   aria-hidden="true"
                 ></span>
                 <span class="ms-2 text-muted">Calculando precio en Bs...</span>
+              <div id="bcv-price" class="text-muted mb-4" style="font-family: 'Poppins', sans-serif; font-size: 1.1rem">
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <span class="ms-1">Calculando precio en Bs...</span>
               </div>
 
               <div class="mb-4 flex-grow-1">
-                <h5
-                  class="fw-bold fs-6 border-bottom pb-2 mb-3"
-                  style="color: var(--secondary-color-2)"
-                >
+                <h5 class="fw-bold fs-6 border-bottom pb-2 mb-3" style="color: var(--secondary-color-2)">
                   Descripción
                 </h5>
                 <p class="card-text">{{ product.description|linebreaks }}</p>
               </div>
 
               <div class="mt-auto">
-                <div
-                  class="d-flex align-items-center justify-content-between mb-3"
-                >
+                <div class="d-flex align-items-center justify-content-between mb-3">
                   <span class="fw-bold">Disponibilidad:</span>
                   {% if product.stock > 0 %}
-                  <span class="badge bg-success rounded-pill px-3"
-                    >Disponible ({{ product.stock }})</span
-                  >
+                  <span class="badge bg-success rounded-pill px-3">Disponible ({{ product.stock }})</span>
                   {% else %}
                   <span class="badge bg-danger rounded-pill px-3">Agotado</span>
                   {% endif %}
@@ -129,56 +121,34 @@
 
                 {% if user.is_authenticated %}
                 <div class="d-grid">
-                  <button
-                    type="button"
-                    class="btn btn-lg shadow-sm"
-                    style="
+                  <button type="button" class="btn btn-lg shadow-sm add-to-cart" style="
                       background-color: #57342d;
                       color: #e67e22;
                       border-radius: 12px;
                       font-weight: 700;
                       letter-spacing: 0.05em;
-                    "
-                    data-bs-toggle="modal"
-                    data-bs-target="#paymentModal"
-                  >
-                    COMPRAR AHORA
+                    " data-product-id="{{ product.pk }}" data-url="{% url 'carrito:cart_add' product.pk %}"
+                    data-image="{% if product.image %}{{ product.image.url }}{% endif %}">
+                    AÑADIR AL CARRITO
                   </button>
                 </div>
                 {% else %}
                 <div class="d-grid">
-                  <a
-                    href="{% url 'login' %}"
-                    class="btn btn-outline-light-custom"
-                    >Iniciar sesión para comprar</a
-                  >
+                  <a href="{% url 'login' %}" class="btn btn-outline-light-custom">Iniciar sesión para comprar</a>
                 </div>
                 {% endif %} {% if user == product.seller or user.is_superuser %}
-                <div
-                  class="d-grid gap-2 d-md-flex mt-3 pt-3 border-top border-light justify-content-md-end"
-                >
-                  <a
-                    href="{% url 'product_update' product.pk %}"
-                    class="btn text-white"
-                    style="
+                <div class="d-grid gap-2 d-md-flex mt-3 pt-3 border-top border-light justify-content-md-end">
+                  <a href="{% url 'product_update' product.pk %}" class="btn text-white" style="
                       background-color: var(--secondary-color-2);
                       border-radius: 8px;
-                    "
-                    >Editar Pieza</a
-                  >
-                  <a
-                    href="{% url 'product_delete' product.pk %}"
-                    class="btn btn-sm btn-outline-light-custom"
-                    style="
+                    ">Editar Pieza</a>
+                  <a href="{% url 'product_delete' product.pk %}" class="btn btn-sm btn-outline-light-custom" style="
                       border-color: #57342d;
                       color: #57342d;
                       border-radius: 8px;
                       font-weight: 500;
-                    "
-                    onmouseover="this.style.backgroundColor='#57342d'; this.style.color='#e67e22';"
-                    onmouseout="this.style.backgroundColor='transparent'; this.style.color='#57342d';"
-                    >Eliminar</a
-                  >
+                    " onmouseover="this.style.backgroundColor='#57342d'; this.style.color='#e67e22';"
+                    onmouseout="this.style.backgroundColor='transparent'; this.style.color='#57342d';">Eliminar</a>
                 </div>
                 {% endif %}
               </div>
@@ -382,6 +352,7 @@
     </div>
   </div>
 </div>
+<!-- Payment Modal Removed -->
 
 {% endblock %} {% block extra_js %}
 <script>
@@ -429,7 +400,14 @@
           priceContainer.innerHTML =
             '<small class="text-danger">Tasa BCV no disponible</small>';
         });
-    }
+        priceContainer.innerHTML = `Bs. ${bsPrice} <small class="text-muted" style="font-size: 0.8rem;">(Tasa BCV: ${rate})</small>`;
+      })
+      .catch((error) => {
+        console.error("Error fetching BCV rate:", error);
+        priceContainer.innerHTML =
+          '<small class="text-danger">Tasa BCV no disponible</small>';
+      });
+  }
   });
 </script>
 {% endblock %}

@@ -13,7 +13,9 @@ class Pedido(models.Model):
 
     PAYMENT_METHOD_CHOICES = [
         ('pago_movil', 'Pago Móvil'),
-        ('zelle', 'Zelle / PayPal'),
+        ('zelle', 'Zelle'),
+        ('paypal', 'PayPal'),
+        ('cashea', 'Cashea'),
         ('transferencia', 'Transferencia Bancaria'),
     ]
 
