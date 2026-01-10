@@ -13,6 +13,19 @@ class Cart:
             # save an empty cart in the session
             cart = self.session[settings.CART_SESSION_ID] = {}
         self.cart = cart
+        
+        # Validation: Remove items that no longer exist in the database
+        product_ids = list(self.cart.keys())
+        if product_ids:
+            products = Product.objects.filter(id__in=product_ids)
+            existing_ids = set(str(p.id) for p in products)
+            dirty = False
+            for pid in product_ids:
+                if pid not in existing_ids:
+                    del self.cart[pid]
+                    dirty = True
+            if dirty:
+                self.save()
 
     def add(self, product, quantity=1, override_quantity=False):
         """
@@ -57,6 +70,8 @@ class Cart:
             cart[str(product.id)]['product'] = product
 
         for item in cart.values():
+            if 'product' not in item:
+                continue
             item['price'] = Decimal(item['price'])
             item['total_price'] = item['price'] * item['quantity']
             yield item
