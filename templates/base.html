@@ -1,200 +1,476 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LAManagement</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link rel="stylesheet" href="{% static 'css/cart.css' %}" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LAManagement</title>
-  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
-    rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-  <link rel="stylesheet" href="{% static 'css/cart.css' %}" />
-</head>
+  <body style="background-color: #e4cdb2">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/main.js' %}"></script>
 
-<body style="background-color: #e4cdb2">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="{% static 'js/main.js' %}"></script>
-
-  {% block navbar %}
-  <div class="container sticky-top mt-4">
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
-      <div class="container-fluid">
-        <a style="font-family: 'Playfair Display', serif; margin-left: 1rem" class="navbar-brand fw-bold"
-          href="{% url 'product_list' %}"><span class="brand-dot">LAM</span>anagement<span
-            class="brand-dot">.</span></a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-          <ul class="navbar-nav align-items-center">
-            {% if user.is_superuser %}
-            <li class="nav-item">
-              <a href="{% url 'dashboard_home' %}" class="nav-link"><span class="brand-dot">D</span>ashboard</a>
-            </li>
-            <li class="nav-item">
-              <a href="{% url 'product_create' %}" class="nav-link bi bi-plus-lg">
-                <span class="brand-dot">P</span>roduct</a>
-            </li>
-            {% endif %}
-
-            <li class="nav-item">
-              <a href="{% url 'inventory_index' %}" class="nav-link"><span class="brand-dot">I</span>nventory</a>
-            </li>
-
-            <li class="nav-item">
-              <a href="{% url 'carrito:cart_detail' %}" class="nav-link text-light position-relative"
-                id="cart-icon-container">
-                <i class="bi bi-cart-fill me-1"></i>
-                <span id="cart-badge"
-                  class="position-absolute top-10 start-100 translate-middle badge rounded-pill bg-danger"
-                  style="font-size: 0.6rem;">
-                  {{ cart|length|default:"0" }}
-                </span>
-              </a>
-            </li>
-
-            {% if user.is_authenticated %}
-            <a href="{% url 'lista_pedidos' %}" class="nav-link text-light">
-              <i class="bi bi-bag-fill me-1"></i>Mis Pedidos
-            </a>
-            </li>
-            <li class="nav-item">
-              <a href="{% url 'user_panel' %}" class="nav-link text-light fw-bold">
-                <i class="bi bi-person-circle me-1"></i>{{ user.username }}
-              </a>
-            </li>
-            {% endif %}
-
-            <li class="nav-item ms-lg-3">
-              <form method="post" action="{% url 'logout' %}" class="d-inline">
-                {% csrf_token %}
-                <button style="color: #e67e22" type="submit" class="btn btn-sm btn-outline-light-custom">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
-                    class="bi bi-box-arrow-right" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd"
-                      d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z" />
-                    <path fill-rule="evenodd"
-                      d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z" />
-                  </svg>
-                </button>
-              </form>
-            </li>
-          </ul>
-        </div>
+    {% block navbar %}
+    <!-- Sidebar Desktop (Visible only on Desktop >= 1024px) -->
+    <div
+      class="sidebar-desktop d-none d-lg-flex flex-column h-100 position-fixed top-0 start-0"
+    >
+      <div class="sidebar-brand p-3 text-center">
+        <a
+          href="{% url 'product_list' %}"
+          class="text-white text-decoration-none fw-bold fs-4"
+        >
+          <span class="brand-dot">L</span
+          ><span class="sidebar-text"
+            >AManagement<span class="brand-dot">.</span></span
+          >
+        </a>
       </div>
-    </nav>
-  </div>
-  {% endblock %}
 
-  <main class="container content flex-grow-1 mt-4">
-    {% if messages %}
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-          {{ message }}
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      <div class="sidebar-nav-list flex-grow-1 py-4">
+        <ul class="nav flex-column gap-2 px-2">
+          {% if user.is_superuser %}
+          <li class="nav-item">
+            <a
+              href="{% url 'dashboard_home' %}"
+              class="nav-link {% if request.resolver_match.url_name == 'dashboard_home' %}active-link{% endif %}"
+              title="Dashboard"
+            >
+              <i class="bi bi-speedometer2"></i>
+              <span class="sidebar-text">Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              href="{% url 'product_create' %}"
+              class="nav-link {% if request.resolver_match.url_name == 'product_create' %}active-link{% endif %}"
+              title="Nuevo Producto"
+            >
+              <i class="bi bi-plus-circle"></i>
+              <span class="sidebar-text">Nuevo Producto</span>
+            </a>
+          </li>
+          {% endif %}
+
+          <li class="nav-item">
+            <a
+              href="{% url 'inventory_index' %}"
+              class="nav-link {% if request.resolver_match.url_name == 'inventory_index' %}active-link{% endif %}"
+              title="Inventario"
+            >
+              <i class="bi bi-box-seam"></i>
+              <span class="sidebar-text">Inventario</span>
+            </a>
+          </li>
+
+          {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a
+              href="{% url 'lista_pedidos' %}"
+              class="nav-link {% if request.resolver_match.url_name == 'lista_pedidos' %}active-link{% endif %}"
+              title="Mis Pedidos"
+            >
+              <i class="bi bi-bag-check"></i>
+              <span class="sidebar-text">Mis Pedidos</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              href="{% url 'user_panel' %}"
+              class="nav-link fw-bold {% if request.resolver_match.url_name == 'user_panel' %}active-link{% endif %}"
+              title="Perfil"
+            >
+              <i class="bi bi-person-circle"></i>
+              <span class="sidebar-text">{{ user.username }}</span>
+            </a>
+          </li>
+          {% endif %}
+
+          <li class="nav-item mt-2">
+            <a
+              href="{% url 'carrito:cart_detail' %}"
+              class="nav-link position-relative d-flex align-items-center {% if request.resolver_match.namespace == 'carrito' %}active-link{% endif %}"
+              id="sidebar-cart"
+              title="Carrito"
+            >
+              <i class="bi bi-cart3"></i>
+              <span class="sidebar-text">Carrito</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="sidebar-footer p-3">
+        {% if user.is_authenticated %}
+        <div
+          class="profile-card-mini d-flex align-items-center p-2 rounded-3 mb-3"
+          style="background: rgba(255, 255, 255, 0.03)"
+        >
+          <div
+            class="avatar-mini rounded-circle d-flex align-items-center justify-content-center bg-warning text-dark fw-bold"
+            style="width: 32px; height: 32px; font-size: 0.8rem"
+          >
+            {{ user.username|first|upper }}
+          </div>
+          <div class="ms-3 sidebar-text">
+            <div class="text-white small fw-bold">{{ user.username }}</div>
+            <div class="text-muted" style="font-size: 0.7rem">Ver Perfil</div>
+          </div>
         </div>
-        {% endfor %}
+        <form method="post" action="{% url 'logout' %}" class="w-100">
+          {% csrf_token %}
+          <button
+            type="submit"
+            class="nav-link btn-link text-light p-0 border-0 w-100 text-start"
+            title="Salir"
+          >
+            <i class="bi bi-box-arrow-right"></i>
+            <span class="sidebar-text">Cerrar Sesión</span>
+          </button>
+        </form>
+        {% else %}
+        <a href="{% url 'login' %}" class="nav-link" title="Iniciar Sesión">
+          <i class="bi bi-person-lock"></i>
+          <span class="sidebar-text">Entrar</span>
+        </a>
+        {% endif %}
       </div>
     </div>
-    {% endif %} {% block content %}{% endblock %}
-  </main>
+    <div class="sidebar-overlay"></div>
 
-  <footer class="footer mt-auto pt-5 pb-4" style="
+    <!-- Mobile Navbar (Hidden on Desktop >= 1024px) -->
+    <div class="container sticky-top mt-4 d-lg-none">
+      <nav class="navbar navbar-dark navbar-custom py-2">
+        <div class="container-fluid px-3">
+          <!-- Brand on the Left -->
+          <a
+            style="font-family: 'Playfair Display', serif"
+            class="navbar-brand fw-bold me-auto"
+            href="{% url 'product_list' %}"
+          >
+            <span class="brand-dot">LAM</span>anagement<span class="brand-dot"
+              >.</span
+            >
+          </a>
+
+          <!-- Right Side Actions -->
+          <div class="d-flex align-items-center">
+            {% if user.is_authenticated %}
+            <div class="d-none d-sm-flex align-items-center me-2">
+              <a
+                href="{% url 'user_panel' %}"
+                class="nav-link text-light fw-bold me-3"
+                style="font-size: 0.9rem"
+              >
+                <i class="bi bi-person-circle me-1"></i>{{ user.username }}
+              </a>
+              <form method="post" action="{% url 'logout' %}" class="d-inline">
+                {% csrf_token %}
+                <button
+                  style="
+                    color: #e67e22;
+                    border: none;
+                    background: transparent;
+                    padding: 0.2rem 0.5rem;
+                  "
+                  type="submit"
+                  title="Cerrar Sesión"
+                >
+                  <i
+                    class="bi bi-box-arrow-right"
+                    style="font-size: 1.4rem"
+                  ></i>
+                </button>
+              </form>
+            </div>
+            {% endif %}
+
+            <a
+              href="{% url 'carrito:cart_detail' %}"
+              class="nav-link text-light position-relative d-flex align-items-center"
+              id="cart-icon-container"
+            >
+              <i class="bi bi-cart3"></i>
+              <span
+                id="cart-badge"
+                class="position-absolute badge rounded-pill"
+              >
+                {{ cart|length|default:"0" }}
+              </span>
+            </a>
+
+            <button
+              class="navbar-toggler ms-2 border-0 shadow-none"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarNav"
+              aria-controls="navbarNav"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+            >
+              <span
+                class="navbar-toggler-icon"
+                style="width: 1.25em; height: 1.25em"
+              ></span>
+            </button>
+          </div>
+
+          <div class="collapse navbar-collapse mt-3" id="navbarNav">
+            <div
+              class="p-3 rounded-4"
+              style="
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+              "
+            >
+              <ul class="navbar-nav">
+                <li class="nav-item mb-2">
+                  <small
+                    class="text-uppercase"
+                    style="
+                      color: rgba(255, 255, 255, 0.3);
+                      font-size: 0.7rem;
+                      letter-spacing: 0.1em;
+                      padding-left: 0.5rem;
+                    "
+                    >Navegación</small
+                  >
+                </li>
+                {% if user.is_superuser %}
+                <li class="nav-item">
+                  <a href="{% url 'dashboard_home' %}" class="nav-link">
+                    <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{% url 'product_create' %}" class="nav-link">
+                    <i class="bi bi-plus-circle me-2"></i>Nuevo Producto
+                  </a>
+                </li>
+                {% endif %}
+
+                <li class="nav-item">
+                  <a href="{% url 'inventory_index' %}" class="nav-link">
+                    <i class="bi bi-box-seam me-2"></i>Inventario
+                  </a>
+                </li>
+
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                  <a href="{% url 'lista_pedidos' %}" class="nav-link">
+                    <i class="bi bi-bag-check me-2"></i>Mis Pedidos
+                  </a>
+                </li>
+                <li
+                  class="nav-item d-flex d-sm-none mt-3 pt-3 border-top border-light border-opacity-10 align-items-center"
+                >
+                  <a
+                    href="{% url 'user_panel' %}"
+                    class="nav-link text-light fw-bold py-0"
+                  >
+                    <i class="bi bi-person-circle me-2"></i>{{ user.username }}
+                  </a>
+                  <form
+                    method="post"
+                    action="{% url 'logout' %}"
+                    class="ms-auto"
+                  >
+                    {% csrf_token %}
+                    <button
+                      class="btn btn-sm btn-outline-danger border-0"
+                      type="submit"
+                    >
+                      Salir
+                    </button>
+                  </form>
+                </li>
+                {% else %}
+                <li class="nav-item mt-2">
+                  <a
+                    href="{% url 'login' %}"
+                    class="btn btn-primary-custom w-100 py-2"
+                    >Iniciar Sesión</a
+                  >
+                </li>
+                {% endif %}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+    {% endblock %}
+
+    <main class="container content flex-grow-1 mt-4">
+      {% if messages %}
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          {% for message in messages %}
+          <div
+            class="alert alert-{{ message.tags }} alert-dismissible fade show"
+            role="alert"
+          >
+            {{ message }}
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+              aria-label="Close"
+            ></button>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %} {% block content %}{% endblock %}
+    </main>
+
+    <footer
+      class="footer mt-auto pt-5 pb-4"
+      style="
         background-color: #3d241f;
         border-top: 5px solid var(--accent-orange);
-      ">
-    <div class="container text-md-start text-center">
-      <div class="row">
-        <!-- Brand Section -->
-        <div class="col-md-4 mb-4 mb-md-0">
-          <h4 class="fw-bold mb-3" style="font-family: 'Playfair Display', serif; color: #e4ded0">
-            <span class="brand-dot">LAM</span>anagement<span class="brand-dot">.</span>
-          </h4>
-          <p class="text-white-50 small pe-md-4">
-            La plataforma definitiva para la gestión de piezas de lujo y moda
-            con estilo. Elevamos tu experiencia de venta y compra a un nivel
-            de exclusividad sin precedentes.
-          </p>
-          <div class="d-flex justify-content-center justify-content-md-start gap-3 mt-4">
-            <a href="#" class="social-link"><i class="bi bi-instagram"></i></a>
-            <a href="#" class="social-link"><i class="bi bi-tiktok"></i></a>
-            <a href="#" class="social-link"><i class="bi bi-facebook"></i></a>
-            <a href="#" class="social-link"><i class="bi bi-whatsapp"></i></a>
+      "
+    >
+      <div class="container text-md-start text-center">
+        <div class="row">
+          <!-- Brand Section -->
+          <div class="col-md-4 mb-4 mb-md-0">
+            <h4
+              class="fw-bold mb-3"
+              style="font-family: 'Playfair Display', serif; color: #e4ded0"
+            >
+              <span class="brand-dot">LAM</span>anagement<span class="brand-dot"
+                >.</span
+              >
+            </h4>
+            <p class="text-white-50 small pe-md-4">
+              La plataforma definitiva para la gestión de piezas de lujo y moda
+              con estilo. Elevamos tu experiencia de venta y compra a un nivel
+              de exclusividad sin precedentes.
+            </p>
+            <div
+              class="d-flex justify-content-center justify-content-md-start gap-3 mt-4"
+            >
+              <a href="#" class="social-link"
+                ><i class="bi bi-instagram"></i
+              ></a>
+              <a href="#" class="social-link"><i class="bi bi-tiktok"></i></a>
+              <a href="#" class="social-link"><i class="bi bi-facebook"></i></a>
+              <a href="#" class="social-link"><i class="bi bi-whatsapp"></i></a>
+            </div>
+          </div>
+
+          <!-- Quick Links -->
+          <div class="col-md-4 mb-4 mb-md-0">
+            <h5
+              class="fw-bold mb-3"
+              style="font-family: 'Playfair Display', serif; color: #e67e22"
+            >
+              Enlaces Rápidos
+            </h5>
+            <ul class="list-unstyled">
+              <li class="mb-2">
+                <a href="{% url 'product_list' %}" class="footer-link"
+                  >Catálogo Exclusivo</a
+                >
+              </li>
+              <li class="mb-2">
+                <a href="{% url 'inventory_index' %}" class="footer-link"
+                  >Gestión de Inventario</a
+                >
+              </li>
+              <li class="mb-2">
+                <a href="{% url 'dashboard_home' %}" class="footer-link"
+                  >Panel de Control</a
+                >
+              </li>
+              <li class="mb-2">
+                <a href="{% url 'product_create' %}" class="footer-link"
+                  >Publicar Nueva Pieza</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <!-- Contact / Support -->
+          <div class="col-md-4">
+            <h5
+              class="fw-bold mb-3"
+              style="font-family: 'Playfair Display', serif; color: #e67e22"
+            >
+              Contacto y Soporte
+            </h5>
+            <ul class="list-unstyled text-white-50 small">
+              <li class="mb-2">
+                <i
+                  class="bi bi-geo-alt-fill me-2"
+                  style="color: var(--accent-orange)"
+                ></i>
+                Caracas, Venezuela
+              </li>
+              <li class="mb-2">
+                <i
+                  class="bi bi-envelope-fill me-2"
+                  style="color: var(--accent-orange)"
+                ></i>
+                exclusive@lamanagement.com
+              </li>
+              <li class="mb-2">
+                <i
+                  class="bi bi-telephone-fill me-2"
+                  style="color: var(--accent-orange)"
+                ></i>
+                +58 (412) 555-0123
+              </li>
+              <li class="mt-3">
+                <small>Soporte disponible 24/7 para clientes Premium.</small>
+              </li>
+            </ul>
           </div>
         </div>
 
-        <!-- Quick Links -->
-        <div class="col-md-4 mb-4 mb-md-0">
-          <h5 class="fw-bold mb-3" style="font-family: 'Playfair Display', serif; color: #e67e22">
-            Enlaces Rápidos
-          </h5>
-          <ul class="list-unstyled">
-            <li class="mb-2">
-              <a href="{% url 'product_list' %}" class="footer-link">Catálogo Exclusivo</a>
-            </li>
-            <li class="mb-2">
-              <a href="{% url 'inventory_index' %}" class="footer-link">Gestión de Inventario</a>
-            </li>
-            <li class="mb-2">
-              <a href="{% url 'dashboard_home' %}" class="footer-link">Panel de Control</a>
-            </li>
-            <li class="mb-2">
-              <a href="{% url 'product_create' %}" class="footer-link">Publicar Nueva Pieza</a>
-            </li>
-          </ul>
-        </div>
+        <hr class="mt-5 mb-4 border-light opacity-10" />
 
-        <!-- Contact / Support -->
-        <div class="col-md-4">
-          <h5 class="fw-bold mb-3" style="font-family: 'Playfair Display', serif; color: #e67e22">
-            Contacto y Soporte
-          </h5>
-          <ul class="list-unstyled text-white-50 small">
-            <li class="mb-2">
-              <i class="bi bi-geo-alt-fill me-2" style="color: var(--accent-orange)"></i>
-              Caracas, Venezuela
-            </li>
-            <li class="mb-2">
-              <i class="bi bi-envelope-fill me-2" style="color: var(--accent-orange)"></i>
-              exclusive@lamanagement.com
-            </li>
-            <li class="mb-2">
-              <i class="bi bi-telephone-fill me-2" style="color: var(--accent-orange)"></i>
-              +58 (412) 555-0123
-            </li>
-            <li class="mt-3">
-              <small>Soporte disponible 24/7 para clientes Premium.</small>
-            </li>
-          </ul>
+        <div class="row align-items-center">
+          <div class="col-md-6 text-center text-md-start">
+            <span class="text-white-50 small"
+              >&copy; 2025 L.A.Management<span class="brand-dot">.</span> Todos
+              los derechos reservados.</span
+            >
+          </div>
+          <div class="col-md-6 text-center text-md-end mt-2 mt-md-0">
+            <a
+              href="#"
+              class="text-white-50 text-decoration-none small me-3 footer-mini-link"
+              >Privacidad</a
+            >
+            <a
+              href="#"
+              class="text-white-50 text-decoration-none small footer-mini-link"
+              >Términos</a
+            >
+          </div>
         </div>
       </div>
-
-      <hr class="mt-5 mb-4 border-light opacity-10" />
-
-      <div class="row align-items-center">
-        <div class="col-md-6 text-center text-md-start">
-          <span class="text-white-50 small">&copy; 2025 L.A.Management<span class="brand-dot">.</span> Todos
-            los derechos reservados.</span>
-        </div>
-        <div class="col-md-6 text-center text-md-end mt-2 mt-md-0">
-          <a href="#" class="text-white-50 text-decoration-none small me-3 footer-mini-link">Privacidad</a>
-          <a href="#" class="text-white-50 text-decoration-none small footer-mini-link">Términos</a>
-        </div>
-      </div>
-    </div>
-  </footer>
-  <script src="{% static 'js/cart.js' %}"></script>
-  {% block extra_js %}{% endblock %}
-</body>
-
+    </footer>
+    <script src="{% static 'js/cart.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+  </body>
 </html>

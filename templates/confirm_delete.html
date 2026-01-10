@@ -1,12 +1,62 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block content %}
+<div class="container py-5 mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <div
+        class="card shadow-lg border-0 rounded-4 overflow-hidden"
+        style="background-color: white"
+      >
+        <div
+          class="card-header border-0 p-4 text-center"
+          style="background-color: #57342d"
+        >
+          <i class="bi bi-exclamation-triangle-fill text-warning display-1"></i>
+          <h2
+            class="text-white fw-bold mt-2"
+            style="font-family: 'Playfair Display', serif"
+          >
+            Confirmar Eliminación
+          </h2>
+        </div>
+        <div class="card-body p-4 text-center">
+          <p class="lead mb-4">
+            ¿Estás completamente seguro de que deseas eliminar la pieza <br />
+            <strong style="color: var(--secondary-color-2)"
+              >"{{ object.name }}"</strong
+            >?
+          </p>
 
-{% block content %}
-<h1>Delete Post</h1>
-<p>Are you sure you want to delete "{{ object.title }}"?</p>
-<form method="post">
-    {% csrf_token %}
-    <button type="submit" class="btn" style="background-color: var(--accent-color); color: white;">Confirm
-        Delete</button>
-    <a href="{% url 'post_detail' object.pk %}" class="btn-link" style="margin-left: 1rem;">Cancel</a>
-</form>
+          <div class="alert alert-danger border-0 rounded-3 small mb-4">
+            <i class="bi bi-info-circle me-2"></i> Esta acción es permanente y
+            no se puede deshacer.
+          </div>
+
+          <form method="post" class="d-grid gap-3">
+            {% csrf_token %}
+            <button
+              type="submit"
+              class="btn btn-lg py-3 shadow-sm"
+              style="
+                background-color: #dc3545;
+                color: white;
+                border-radius: 12px;
+                font-weight: 700;
+                letter-spacing: 0.05em;
+              "
+            >
+              ELIMINAR PERMANENTEMENTE
+            </button>
+            <a
+              href="{% url 'product_detail' object.pk %}"
+              class="btn btn-lg py-3 btn-outline-secondary"
+              style="border-radius: 12px; font-weight: 600"
+            >
+              CANCELAR
+            </a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
