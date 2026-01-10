@@ -20,6 +20,12 @@ def dashboard(request):
             p_form.save()
             messages.success(request, f'¡Tu cuenta ha sido actualizada!')
             return redirect('user_panel')
+        else:
+            print("--- Form Error Debug ---")
+            print(f"FILES: {request.FILES}")
+            print(f"User Form Errors: {u_form.errors}")
+            print(f"Profile Form Errors: {p_form.errors}")
+            messages.error(request, 'Hubo un error al actualizar tu perfil.')
 
     else:
         u_form = UserUpdateForm(instance=request.user)

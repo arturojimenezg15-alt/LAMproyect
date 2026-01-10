@@ -16,14 +16,28 @@
               <img
                 src="{{ user.profile.profile_picture.url }}"
                 alt="Foto de Perfil"
+                id="profilePreview"
                 class="rounded-circle shadow-sm border border-4 border-white"
                 style="width: 160px; height: 160px; object-fit: cover"
               />
               {% else %}
+              <div
+                id="profilePreviewPlaceholder"
+                class="rounded-circle shadow-sm border border-4 border-white d-flex align-items-center justify-content-center bg-light"
+                style="
+                  width: 160px;
+                  height: 160px;
+                  font-size: 3rem;
+                  color: #d1c4b9;
+                "
+              >
+                <i class="bi bi-person-fill"></i>
+              </div>
               <img
-                src="https://via.placeholder.com/160"
-                alt="Perfil Predeterminado"
-                class="rounded-circle shadow-sm border border-4 border-white"
+                id="profilePreview"
+                src=""
+                alt="Nueva Foto"
+                class="rounded-circle shadow-sm border border-4 border-white d-none"
                 style="width: 160px; height: 160px; object-fit: cover"
               />
               {% endif %}
@@ -59,6 +73,17 @@
           </h4>
           <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Nombre de Usuario</label>
+              <input
+                type="text"
+                class="form-control"
+                value="{{ user.username }}"
+                readonly
+                style="background-color: #f8f9fa"
+              />
+            </div>
 
             <div class="row g-3 mb-4">
               <div class="col-md-6">
@@ -233,6 +258,35 @@
       x.type = "password";
       icon.classList.replace("bi-eye-slash", "bi-eye");
     }
+  }
+
+  // Preview profile picture before saving
+  document.getElementById("id_profile_picture").onchange = function (evt) {
+    const [file] = this.files;
+    if (file) {
+      const preview = document.getElementById("profilePreview");
+      const placeholder = document.getElementById("profilePreviewPlaceholder");
+
+      preview.src = URL.createObjectURL(file);
+      preview.classList.remove("d-none");
+
+      if (placeholder) {
+        placeholder.classList.add("d-none");
+      }
+
+      // Notify user that they need to save
+      messages_show(
+        'Imagen seleccionada. No olvides "Guardar Cambios" para actualizar tu perfil.',
+        "info"
+      );
+    }
+  };
+
+  function messages_show(msg, tags) {
+    // Simple helper if a toast/notification system isn't globally available
+    // For now, we'll just log or could append a temporary alert
+    console.log(msg);
+    // If you have a specific alert container, you can add it there
   }
 </script>
 {% endblock %}
