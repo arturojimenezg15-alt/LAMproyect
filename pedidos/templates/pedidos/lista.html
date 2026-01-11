@@ -81,10 +81,7 @@
                         style="width: 45px; height: 45px; object-fit: cover"
                       />
                       {% endif %}
-                      <span class="fw-semibold"
-                        >{{ pedido.producto.name|default:"Producto eliminado"
-                        }}</span
-                      >
+                      <span class="fw-semibold"> {{ pedido.producto.name }}</span>
                     </div>
                   </td>
                   <td class="text-muted small">
