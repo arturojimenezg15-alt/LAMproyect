@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from decimal import Decimal
 from django.views.decorators.http import require_POST
-from store.models import Product
+from store.models import Product, ExchangeRate
 from .cart import Cart
 from pedidos.models import Pedido
 from django.contrib.auth.decorators import login_required
@@ -19,6 +19,11 @@ def cart_add(request, product_id):
     
     # Fallback for non-ajax
     cart.add(product=product, quantity=1)
+    
+    next_url = request.POST.get('next')
+    if next_url:
+        return redirect(next_url)
+        
     return redirect('carrito:cart_detail')
 
 def cart_remove(request, product_id):
@@ -69,6 +74,12 @@ def checkout(request):
         messages.warning(request, "Tu carrito está vacío.")
         return redirect('product_list')
 
+    # Obtener tasa de cambio
+    try:
+        manual_rate = ExchangeRate.objects.latest().rate
+    except ExchangeRate.DoesNotExist:
+        manual_rate = None
+
     if request.method == 'POST':
         metodo_pago = request.POST.get('metodo_pago')
         referencia = request.POST.get('referencia_pago')
@@ -77,7 +88,10 @@ def checkout(request):
         valid_methods = [c[0] for c in Pedido.PAYMENT_METHOD_CHOICES]
         if metodo_pago not in valid_methods:
              messages.error(request, "Método de pago inválido.")
-             return render(request, 'carrito/checkout.html', {'cart': cart})
+             return render(request, 'carrito/checkout.html', {
+                 'cart': cart,
+                 'manual_rate': manual_rate
+             })
 
         # Crear pedidos
         for item in cart:
@@ -108,4 +122,7 @@ def checkout(request):
         messages.success(request, "¡Compra realizada con éxito!")
         return redirect('lista_pedidos')
 
-    return render(request, 'carrito/checkout.html', {'cart': cart})
+    return render(request, 'carrito/checkout.html', {
+        'cart': cart, 
+        'manual_rate': manual_rate
+    })

@@ -1,150 +1,296 @@
-{% extends "base.html" %}
-{% load static %}
-
-{% block content %}
+{% extends "base.html" %} {% load static %} {% load l10n %} {% block content %}
 <div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <!-- Header -->
-            <div class="text-center mb-4">
-                <h2 class="display-6 fw-bold" style="font-family: 'Playfair Display', serif; color: #57342d;">
-                    Finalizar Compra<span class="brand-dot">.</span>
-                </h2>
-                <p class="text-muted">Completa tu pedido de forma segura</p>
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <!-- Header -->
+      <div class="text-center mb-4">
+        <h2
+          class="display-6 fw-bold"
+          style="font-family: 'Playfair Display', serif; color: #57342d"
+        >
+          Finalizar Compra<span class="brand-dot">.</span>
+        </h2>
+        <p class="text-muted">Completa tu pedido de forma segura</p>
+      </div>
+
+      <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+        <div class="card-body p-4 p-md-5">
+          <!-- Order Summary -->
+          <h5
+            class="mb-4 fw-bold"
+            style="font-family: 'Playfair Display', serif; color: #57342d"
+          >
+            Resumen del Pedido
+          </h5>
+          <ul class="list-group list-group-flush mb-4 rounded-3">
+            {% for item in cart %}
+            <li
+              class="list-group-item d-flex justify-content-between align-items-center py-3 bg-transparent border-bottom"
+            >
+              <div>
+                <h6 class="my-0 fw-semibold text-dark">
+                  {{ item.product.name }}
+                </h6>
+                <small class="text-muted">x {{ item.quantity }}</small>
+              </div>
+              <span class="text-muted fw-medium">${{ item.total_price }}</span>
+            </li>
+            {% endfor %}
+            <li
+              class="list-group-item d-flex justify-content-between align-items-center py-3"
+              style="background-color: #fcfbf9; border-top: 2px dashed #e4cdb2"
+            >
+              <div>
+                <span class="fw-bold d-block" style="color: #57342d"
+                  >TOTAL (USD)</span
+                >
+                {% if manual_rate %}
+                <small class="text-muted">Tasa: {{ manual_rate }} Bs/USD</small>
+                {% endif %}
+              </div>
+              <div class="text-end">
+                <strong
+                  class="fs-4 d-block"
+                  style="color: #e67e22; font-family: 'Playfair Display', serif"
+                >
+                  ${{ cart.get_total_price }}
+                </strong>
+                {% if manual_rate %}
+                <small class="fw-bold" style="color: #57342d">
+                  Bs. {% widthratio cart.get_total_price 1 manual_rate %}
+                </small>
+                {% else %}
+                <small
+                  id="bcv-checkout-price"
+                  class="fw-bold"
+                  style="color: #57342d"
+                  data-total="{{ cart.get_total_price|unlocalize }}"
+                >
+                  <span
+                    class="spinner-border spinner-border-sm text-warning"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                </small>
+                {% endif %}
+              </div>
+            </li>
+          </ul>
+
+          <!-- Payment Form -->
+          <h5
+            class="mb-3 fw-bold"
+            style="font-family: 'Playfair Display', serif; color: #57342d"
+          >
+            Método de Pago
+          </h5>
+          <form
+            method="post"
+            action="{% url 'carrito:checkout' %}"
+            id="checkoutForm"
+          >
+            {% csrf_token %}
+            <div class="mb-4">
+              <label
+                for="metodo_pago"
+                class="form-label small text-muted text-uppercase fw-bold"
+                >Seleccione una opción</label
+              >
+              <select
+                class="form-select form-select-lg shadow-sm border-0 bg-light"
+                name="metodo_pago"
+                id="metodo_pago"
+                required
+                style="border-radius: 10px"
+              >
+                <option value="" disabled selected>
+                  -- Elige tu método de pago --
+                </option>
+                <option value="pago_movil">Pago Móvil</option>
+                <option value="zelle">Zelle</option>
+                <option value="paypal">PayPal</option>
+                <option value="cashea">Cashea</option>
+                <option value="transferencia">Transferencia Bancaria</option>
+              </select>
             </div>
 
-            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
-                <div class="card-body p-4 p-md-5">
-                    <!-- Order Summary -->
-                    <h5 class="mb-4 fw-bold" style="font-family: 'Playfair Display', serif; color: #57342d;">
-                        Resumen del Pedido
-                    </h5>
-                    <ul class="list-group list-group-flush mb-4 rounded-3">
-                        {% for item in cart %}
-                        <li
-                            class="list-group-item d-flex justify-content-between align-items-center py-3 bg-transparent border-bottom">
-                            <div>
-                                <h6 class="my-0 fw-semibold text-dark">{{ item.product.name }}</h6>
-                                <small class="text-muted">x {{ item.quantity }}</small>
-                            </div>
-                            <span class="text-muted fw-medium">${{ item.total_price }}</span>
-                        </li>
-                        {% endfor %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center py-3"
-                            style="background-color: #fcfbf9; border-top: 2px dashed #e4cdb2;">
-                            <span class="fw-bold" style="color: #57342d;">TOTAL (USD)</span>
-                            <strong class="fs-4" style="color: #e67e22; font-family: 'Playfair Display', serif;">
-                                ${{ cart.get_total_price }}
-                            </strong>
-                        </li>
-                    </ul>
+            <!-- Dynamic Payment Details -->
+            <div
+              id="detalles_pago"
+              class="mb-4 p-4 rounded-4"
+              style="
+                display: none;
+                background-color: #fcfbf9;
+                border: 1px solid #e4cdb2;
+              "
+            >
+              <!-- Info Sections -->
+              <div
+                id="info_pago_movil"
+                class="pago-info text-center"
+                style="display: none"
+              >
+                <i class="bi bi-phone fs-1 mb-2 text-warning"></i>
+                <h6 class="fw-bold text-dark">Datos Pago Móvil</h6>
+                <p class="mb-0 small text-muted">
+                  Banesco • 0414-5550123 • V-12.345.678
+                </p>
+              </div>
+              <div
+                id="info_zelle"
+                class="pago-info text-center"
+                style="display: none"
+              >
+                <i class="bi bi-currency-dollar fs-1 mb-2 text-primary"></i>
+                <h6 class="fw-bold text-dark">Zelle / PayPal</h6>
+                <p class="mb-0 small text-muted">pagos@lamanagement.com</p>
+              </div>
+              <div
+                id="info_paypal"
+                class="pago-info text-center"
+                style="display: none"
+              >
+                <i class="bi bi-paypal fs-1 mb-2 text-primary"></i>
+                <h6 class="fw-bold text-dark">PayPal</h6>
+                <p class="mb-0 small text-muted">paypal@lamanagement.com</p>
+              </div>
+              <div
+                id="info_cashea"
+                class="pago-info text-center"
+                style="display: none"
+              >
+                <i class="bi bi-qr-code-scan fs-1 mb-2 text-info"></i>
+                <h6 class="fw-bold text-dark">Cashea</h6>
+                <p class="mb-0 small text-muted">
+                  Escanea el código QR al confirmar.
+                </p>
+              </div>
+              <div
+                id="info_transferencia"
+                class="pago-info text-center"
+                style="display: none"
+              >
+                <i class="bi bi-bank fs-1 mb-2 text-success"></i>
+                <h6 class="fw-bold text-dark">Transferencia Nacional</h6>
+                <p class="mb-0 small text-muted">
+                  Mercantil • 0105-XXXX-XXXX-XXXX-XXXX
+                </p>
+              </div>
 
-                    <!-- Payment Form -->
-                    <h5 class="mb-3 fw-bold" style="font-family: 'Playfair Display', serif; color: #57342d;">
-                        Método de Pago
-                    </h5>
-                    <form method="post" action="{% url 'carrito:checkout' %}" id="checkoutForm">
-                        {% csrf_token %}
-                        <div class="mb-4">
-                            <label for="metodo_pago"
-                                class="form-label small text-muted text-uppercase fw-bold">Seleccione una opción</label>
-                            <select class="form-select form-select-lg shadow-sm border-0 bg-light" name="metodo_pago"
-                                id="metodo_pago" required style="border-radius: 10px;">
-                                <option value="" disabled selected>-- Elige tu método de pago --</option>
-                                <option value="pago_movil">Pago Móvil</option>
-                                <option value="zelle">Zelle</option>
-                                <option value="paypal">PayPal</option>
-                                <option value="cashea">Cashea</option>
-                                <option value="transferencia">Transferencia Bancaria</option>
-                            </select>
-                        </div>
-
-                        <!-- Dynamic Payment Details -->
-                        <div id="detalles_pago" class="mb-4 p-4 rounded-4"
-                            style="display:none; background-color: #fcfbf9; border: 1px solid #e4cdb2;">
-
-                            <!-- Info Sections -->
-                            <div id="info_pago_movil" class="pago-info text-center" style="display:none;">
-                                <i class="bi bi-phone fs-1 mb-2 text-warning"></i>
-                                <h6 class="fw-bold text-dark">Datos Pago Móvil</h6>
-                                <p class="mb-0 small text-muted">Banesco • 0414-5550123 • V-12.345.678</p>
-                            </div>
-                            <div id="info_zelle" class="pago-info text-center" style="display:none;">
-                                <i class="bi bi-currency-dollar fs-1 mb-2 text-primary"></i>
-                                <h6 class="fw-bold text-dark">Zelle / PayPal</h6>
-                                <p class="mb-0 small text-muted">pagos@lamanagement.com</p>
-                            </div>
-                            <div id="info_paypal" class="pago-info text-center" style="display:none;">
-                                <i class="bi bi-paypal fs-1 mb-2 text-primary"></i>
-                                <h6 class="fw-bold text-dark">PayPal</h6>
-                                <p class="mb-0 small text-muted">paypal@lamanagement.com</p>
-                            </div>
-                            <div id="info_cashea" class="pago-info text-center" style="display:none;">
-                                <i class="bi bi-qr-code-scan fs-1 mb-2 text-info"></i>
-                                <h6 class="fw-bold text-dark">Cashea</h6>
-                                <p class="mb-0 small text-muted">Escanea el código QR al confirmar.</p>
-                            </div>
-                            <div id="info_transferencia" class="pago-info text-center" style="display:none;">
-                                <i class="bi bi-bank fs-1 mb-2 text-success"></i>
-                                <h6 class="fw-bold text-dark">Transferencia Nacional</h6>
-                                <p class="mb-0 small text-muted">Mercantil • 0105-XXXX-XXXX-XXXX-XXXX</p>
-                            </div>
-
-                            <div class="mt-4">
-                                <label for="referencia_pago" class="form-label small text-muted text-uppercase fw-bold">
-                                    Referencia / Comprobante
-                                </label>
-                                <input type="text" class="form-control form-control-lg shadow-sm border-0"
-                                    name="referencia_pago" id="referencia_pago" placeholder="Ej: 12345678" required
-                                    style="border-radius: 10px;">
-                            </div>
-                        </div>
-
-                        <div class="d-grid mt-5">
-                            <button class="btn btn-lg py-3 shadow-lg position-relative overflow-hidden" type="submit"
-                                style="background-color: #57342d; color: #e67e22; border-radius: 12px; font-weight: 700; letter-spacing: 0.05em; transition: all 0.3s ease;">
-                                <span class="position-relative z-1">CONFIRMAR Y PAGAR</span>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-                <div class="card-footer bg-light text-center py-3 border-0">
-                    <small class="text-muted"><i class="bi bi-shield-lock-fill me-1"></i> Transacción 100%
-                        Segura</small>
-                </div>
+              <div class="mt-4">
+                <label
+                  for="referencia_pago"
+                  class="form-label small text-muted text-uppercase fw-bold"
+                >
+                  Referencia / Comprobante
+                </label>
+                <input
+                  type="text"
+                  class="form-control form-control-lg shadow-sm border-0"
+                  name="referencia_pago"
+                  id="referencia_pago"
+                  placeholder="Ej: 12345678"
+                  required
+                  style="border-radius: 10px"
+                />
+              </div>
             </div>
 
-            <div class="text-center mt-4">
-                <a href="{% url 'carrito:cart_detail' %}" class="text-decoration-none small fw-bold"
-                    style="color: #57342d;">
-                    <i class="bi bi-arrow-left me-1"></i> Volver al Carrito
-                </a>
+            <div class="d-grid mt-5">
+              <button
+                class="btn btn-lg py-3 shadow-lg position-relative overflow-hidden"
+                type="submit"
+                style="
+                  background-color: #57342d;
+                  color: #e67e22;
+                  border-radius: 12px;
+                  font-weight: 700;
+                  letter-spacing: 0.05em;
+                  transition: all 0.3s ease;
+                "
+              >
+                <span class="position-relative z-1">CONFIRMAR Y PAGAR</span>
+              </button>
             </div>
+          </form>
         </div>
+        <div class="card-footer bg-light text-center py-3 border-0">
+          <small class="text-muted"
+            ><i class="bi bi-shield-lock-fill me-1"></i> Transacción 100%
+            Segura</small
+          >
+        </div>
+      </div>
+
+      <div class="text-center mt-4">
+        <a
+          href="{% url 'carrito:cart_detail' %}"
+          class="text-decoration-none small fw-bold"
+          style="color: #57342d"
+        >
+          <i class="bi bi-arrow-left me-1"></i> Volver al Carrito
+        </a>
+      </div>
     </div>
+  </div>
 </div>
-
+{% endblock %} {% block extra_js %}
 <script>
-    document.getElementById('metodo_pago').addEventListener('change', function () {
-        var metodo = this.value;
-        var detalles = document.getElementById('detalles_pago');
-        var infos = document.getElementsByClassName('pago-info');
+  // Payment methods logic
+  document
+    .getElementById("metodo_pago")
+    .addEventListener("change", function () {
+      var metodo = this.value;
+      var detalles = document.getElementById("detalles_pago");
+      var infos = document.getElementsByClassName("pago-info");
 
-        // Ocultar todas las infos
-        for (var i = 0; i < infos.length; i++) {
-            infos[i].style.display = 'none';
-        }
+      for (var i = 0; i < infos.length; i++) {
+        infos[i].style.display = "none";
+      }
 
-        if (metodo) {
-            detalles.style.display = 'block';
-            detalles.classList.add('animate__animated', 'animate__fadeIn'); // Optional animation class
-            var targetInfo = document.getElementById('info_' + metodo);
-            if (targetInfo) {
-                targetInfo.style.display = 'block';
-            }
-        } else {
-            detalles.style.display = 'none';
+      if (metodo) {
+        detalles.style.display = "block";
+        detalles.classList.add("animate__animated", "animate__fadeIn");
+        var targetInfo = document.getElementById("info_" + metodo);
+        if (targetInfo) {
+          targetInfo.style.display = "block";
         }
+      } else {
+        detalles.style.display = "none";
+      }
     });
+
+  // VES Price Logic
+  document.addEventListener("DOMContentLoaded", function () {
+    const priceContainer = document.getElementById("bcv-checkout-price");
+    if (!priceContainer) return; // Manual rate exists
+
+    const rawTotal = priceContainer.getAttribute("data-total");
+    if (!rawTotal) return;
+
+    const usdTotal = parseFloat(rawTotal.replace(",", ".")); // Handle comma decimal if needed, though unlocalize usually gives dot
+
+    if (isNaN(usdTotal)) {
+      priceContainer.innerText = "Error";
+      return;
+    }
+
+    fetch("https://ve.dolarapi.com/v1/dolares/bcv")
+      .then((response) => response.json())
+      .then((data) => {
+        const rate = data.promedio || data.oficial;
+        if (!rate) throw new Error("Rate not found");
+
+        const bsTotal = (usdTotal * rate).toLocaleString("es-VE", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        });
+        priceContainer.innerHTML = `Bs. ${bsTotal}`;
+      })
+      .catch((error) => {
+        console.error("Error fetching rate", error);
+        priceContainer.innerText = "Bs. --";
+      });
+  });
 </script>
 {% endblock %}

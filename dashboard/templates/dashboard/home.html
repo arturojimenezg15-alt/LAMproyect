@@ -1,5 +1,13 @@
 {% extends 'base.html' %} {% block content %}
 <div class="dashboard-container">
+  <div style="margin-left: 2rem; margin-bottom: 1rem">
+    <button
+      onclick="window.history.back()"
+      class="btn btn-outline-dark rounded-pill px-4"
+    >
+      <i class="bi bi-arrow-left me-2"></i>Volver
+    </button>
+  </div>
   <h1
     class="page-title"
     style="
@@ -45,7 +53,7 @@
       <div class="card-info">
         <h3 style="color: #6c1305">Total Revenue</h3>
         <p style="color: #6c1305; text-align: center" class="card-value">
-          ${{ total_revenue }}
+          ${{ total_revenue|floatformat:2 }}
         </p>
       </div>
     </div>

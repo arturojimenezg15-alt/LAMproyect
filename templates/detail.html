@@ -123,7 +123,7 @@
                 </div>
 
                 {% if user.is_authenticated %}
-                <div class="d-grid">
+                <div class="d-grid mb-3">
                   <button
                     type="button"
                     class="btn btn-lg shadow-sm add-to-cart"
@@ -140,6 +140,33 @@
                   >
                     AÑADIR AL CARRITO
                   </button>
+                </div>
+                <div class="d-grid">
+                  <form
+                    action="{% url 'carrito:cart_add' product.pk %}"
+                    method="post"
+                    class="d-grid"
+                  >
+                    {% csrf_token %}
+                    <input
+                      type="hidden"
+                      name="next"
+                      value="{% url 'carrito:checkout' %}"
+                    />
+                    <button
+                      type="submit"
+                      class="btn btn-lg shadow-sm"
+                      style="
+                        background-color: #e67e22;
+                        color: white;
+                        border-radius: 12px;
+                        font-weight: 700;
+                        letter-spacing: 0.05em;
+                      "
+                    >
+                      COMPRAR AHORA
+                    </button>
+                  </form>
                 </div>
                 {% else %}
                 <div class="d-grid">

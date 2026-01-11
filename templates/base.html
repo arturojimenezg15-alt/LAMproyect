@@ -31,10 +31,9 @@
     <!-- Sidebar Desktop (Visible only on Desktop >= 1024px) -->
 
     <!-- Mobile Navbar (Hidden on Desktop >= 1024px) -->
-    <divJ class="container sticky-top mt-2">
+    <div class="container sticky-top mt-2">
       <nav class="navbar navbar-dark navbar-custom py-2">
         <div class="container-fluid px-3">
-          <!-- Brand on the Left -->
           <a
             style="font-family: 'Playfair Display', serif"
             class="navbar-brand fw-bold me-auto"
@@ -44,8 +43,6 @@
               >.</span
             >
           </a>
-
-          <!-- Right Side Actions -->
           <div class="d-flex align-items-center">
             {% if user.is_authenticated %}
             <div class="d-none d-sm-flex align-items-center me-2">
@@ -190,7 +187,7 @@
           </div>
         </div>
       </nav>
-    </divJ>
+    </div>
     {% endblock %}
 
     <main class="container content flex-grow-1 mt-4">
